@@ -1,0 +1,51 @@
+{{ define "main" }}
+<div class="wrap">
+  {{ partial "breadcrumb.html" . }}
+  <header class="doc-head">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+  </header>
+
+  <div class="prose">{{ .Content }}</div>
+
+  {{ $ents := .RegularPages }}
+
+  <h2 class="sec-head" id="by-category">By category</h2>
+  {{ range $ents.GroupByParam "category" }}
+    <h3 class="cat-head">{{ .Key }} <span class="muted small">({{ len .Pages }})</span></h3>
+    <ul class="ent-grid">
+      {{ range .Pages }}
+        <li><a class="mono" href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+      {{ end }}
+    </ul>
+  {{ end }}
+
+  <h2 class="sec-head" id="alphabetical">Alphabetical index</h2>
+  <ul class="ent-grid">
+    {{ range $ents.ByTitle }}<li><a class="mono" href="{{ .RelPermalink }}">{{ .Title }}</a></li>{{ end }}
+  </ul>
+
+  <h2 class="sec-head" id="cross-index">Entity &rarr; tutorial cross-index</h2>
+  <p class="muted">
+    Inky's trick, generated instead of hand-maintained: each tutorial declares the entities it uses in its front matter,
+    and this table is inverted from those declarations at build time. It cannot go stale.
+  </p>
+  <div class="db-table-wrap">
+    <table class="db-table">
+      <thead><tr><th>Entity</th><th>Talked about in</th></tr></thead>
+      <tbody>
+      {{ range $ents.ByTitle }}
+        {{ $name := .Title }}
+        {{ $uses := where (where site.RegularPages "Section" "modding") "Params.entities" "intersect" (slice $name) }}
+        {{ if $uses }}
+          <tr>
+            <td><a class="mono" href="{{ .RelPermalink }}">{{ $name }}</a></td>
+            <td>{{ range $uses }}<a href="{{ .RelPermalink }}">{{ .Title }}</a><br>{{ end }}</td>
+          </tr>
+        {{ end }}
+      {{ end }}
+      </tbody>
+    </table>
+  </div>
+</div>
+{{ end }}

@@ -1,0 +1,12 @@
+{{ with .Params.entities }}
+<aside class="callout callout-link">
+  <p><strong>Entities used in this article:</strong></p>
+  <p>
+    {{ range . }}
+      {{ $p := site.GetPage (printf "/reference/%s" (. | urlize)) }}
+      {{ if $p }}<a class="mono tag" href="{{ $p.RelPermalink }}">{{ . }}</a>{{ else }}<span class="mono tag tag-dead">{{ . }}</span>{{ end }}
+    {{ end }}
+  </p>
+  <p class="muted small">Greyed-out names have no reference page yet — that is the to-do list, generated rather than remembered.</p>
+</aside>
+{{ end }}

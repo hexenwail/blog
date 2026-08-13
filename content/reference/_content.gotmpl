@@ -1,0 +1,24 @@
+{{/*
+  Content adapter: turns data/entities.yaml into /reference/<name>/ pages at build time.
+  This is the "data, not pages" rule from the epic — the old hexenworld.com shipped ~150
+  hand-written HTML files here, and every one of them rotted independently.
+*/}}
+{{ range hugo.Data.entities }}
+  {{ $content := dict "mediaType" "text/markdown" "value" .body }}
+  {{ $params := dict
+      "category"    .category
+      "games"       .games
+      "keys"        .keys
+      "spawnflags"  .spawnflags
+      "related"     .related
+      "example"     .example
+      "ravenMaps"   .ravenMaps
+  }}
+  {{ $.AddPage (dict
+      "path"        (.name | urlize)
+      "title"       .name
+      "description" .summary
+      "content"     $content
+      "params"      $params
+  ) }}
+{{ end }}

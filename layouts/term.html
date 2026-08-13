@@ -1,0 +1,22 @@
+{{ define "main" }}
+<div class="wrap">
+  {{ partial "breadcrumb.html" . }}
+  <header class="doc-head">
+    <p class="kicker">{{ .Data.Singular }}</p>
+    <h1>{{ .Title }}</h1>
+    <p class="lede">{{ len .Pages }} page{{ if ne (len .Pages) 1 }}s{{ end }} tagged &ldquo;{{ .Title }}&rdquo;.</p>
+  </header>
+
+  <div class="prose">{{ .Content }}</div>
+
+  <ul class="listing">
+    {{ range .Pages }}
+      <li>
+        <a href="{{ .RelPermalink }}"><strong>{{ .Title }}</strong></a>
+        <span class="badge">{{ .Section }}</span>
+        {{ with .Description }}<br><span class="muted">{{ . }}</span>{{ end }}
+      </li>
+    {{ end }}
+  </ul>
+</div>
+{{ end }}

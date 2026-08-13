@@ -1,0 +1,76 @@
+{{ define "main" }}
+<div class="wrap">
+  {{ partial "breadcrumb.html" . }}
+  <article class="doc">
+    <header class="doc-head">
+      <p class="kicker">{{ .Params.releaseType }}</p>
+      <h1>{{ .Title }}</h1>
+      {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+    </header>
+
+    <div class="split">
+      <div class="prose">
+        {{ .Content }}
+
+        {{ with .Params.readme }}
+          <h2>From the author's readme</h2>
+          <blockquote class="readme">{{ . | markdownify }}</blockquote>
+        {{ end }}
+
+        {{ with .Params.screenshots }}
+          <h2>Screenshots</h2>
+          <div class="shots">
+            {{ range . }}
+              <figure>
+                <div class="shot-placeholder" role="img" aria-label="{{ .caption }}">
+                  <span>{{ .file }}</span>
+                </div>
+                <figcaption>{{ .caption }}</figcaption>
+              </figure>
+            {{ end }}
+          </div>
+        {{ end }}
+      </div>
+
+      <aside class="factbox">
+        <h2 class="sec-head">Facts</h2>
+        <dl>
+          <dt>Author</dt><dd>{{ delimit .Params.authors ", " }}</dd>
+          <dt>Released</dt><dd>{{ .Params.released }}</dd>
+          <dt>Version</dt><dd>{{ .Params.version | default "—" }}</dd>
+          <dt>Type</dt><dd>{{ .Params.releaseType }}</dd>
+          <dt>Engine</dt><dd>{{ .Params.engine }}</dd>
+          <dt>Vanilla-compatible</dt><dd>{{ if .Params.vanilla }}Yes{{ else }}No{{ end }}</dd>
+          <dt>Portal of Praevus</dt><dd>{{ if .Params.needsPraevus }}Required{{ else }}Not required{{ end }}</dd>
+          <dt>Modes</dt><dd>{{ delimit .Params.modes ", " }}</dd>
+          <dt>Classes</dt><dd>{{ if .Params.classes }}{{ delimit .Params.classes ", " }}{{ else }}All four{{ end }}</dd>
+        </dl>
+
+        <h3 class="sec-head">Download</h3>
+        {{ with .Params.download }}
+          <p class="dl">
+            <a class="btn btn-small" href="{{ .primary }}">{{ .filename }}</a>
+            <span class="muted small">{{ .size }}</span>
+          </p>
+          <p class="muted small mono break">sha256:{{ .sha256 }}</p>
+          <ul class="bare tight small">
+            {{ range .mirrors }}<li><a href="{{ .url }}">{{ .label }}</a></li>{{ end }}
+          </ul>
+        {{ end }}
+
+        {{ with .Params.tags }}
+          <h3 class="sec-head">Tags</h3>
+          <p>{{ range . }}<a class="tag" href="{{ "tags/" | relURL }}{{ . | urlize }}/">{{ . }}</a>{{ end }}</p>
+        {{ end }}
+
+        {{ with .Params.sources }}
+          <h3 class="sec-head">Sources</h3>
+          <ul class="bare tight small">
+            {{ range . }}<li><a href="{{ .url }}">{{ .label }}</a></li>{{ end }}
+          </ul>
+        {{ end }}
+      </aside>
+    </div>
+  </article>
+</div>
+{{ end }}

@@ -1,0 +1,53 @@
+{{ define "main" }}
+<div class="wrap">
+  {{ partial "breadcrumb.html" . }}
+  <header class="doc-head">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+  </header>
+
+  <div class="prose">{{ .Content }}</div>
+
+  {{ $all := .RegularPages }}
+
+  <nav class="filters" aria-label="Browse by">
+    <span class="muted small">Browse:</span>
+    <a href="#by-date" class="chip">Newest</a>
+    {{ range $t, $p := (index site.Taxonomies "tags") }}
+      <a class="chip" href="{{ "tags/" | relURL }}{{ $t | urlize }}/">{{ $t }} <span class="muted">{{ len $p }}</span></a>
+    {{ end }}
+  </nav>
+
+  <h2 id="by-date" class="sec-head">All releases, newest first</h2>
+
+  <div class="db-table-wrap">
+    <table class="db-table">
+      <thead>
+        <tr><th>Release</th><th>Author</th><th>Released</th><th>Type</th><th>Engine</th><th>Classes</th></tr>
+      </thead>
+      <tbody>
+      {{ range (sort $all "Params.released" "desc") }}
+        <tr>
+          <td><a href="{{ .RelPermalink }}"><strong>{{ .Title }}</strong></a></td>
+          <td>{{ delimit .Params.authors ", " }}</td>
+          <td>{{ .Params.released }}</td>
+          <td>{{ .Params.releaseType }}</td>
+          <td>{{ .Params.engine }}</td>
+          <td class="small">{{ if .Params.classes }}{{ delimit .Params.classes ", " }}{{ else }}all{{ end }}</td>
+        </tr>
+      {{ end }}
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="sec-head">By author</h2>
+  <ul class="listing">
+    {{ range $a, $p := (index site.Taxonomies "authors") }}
+      <li>
+        <strong>{{ $a }}</strong> —
+        {{ range $i, $wp := $p }}{{ if $i }}, {{ end }}<a href="{{ $wp.RelPermalink }}">{{ $wp.Title }}</a>{{ end }}
+      </li>
+    {{ end }}
+  </ul>
+</div>
+{{ end }}

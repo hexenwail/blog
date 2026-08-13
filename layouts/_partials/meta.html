@@ -1,0 +1,7 @@
+{{ if or .Params.verified .Params.authors .Params.updated }}
+<p class="pagemeta small">
+  {{ with .Params.authors }}<span>by {{ delimit . ", " }}</span>{{ end }}
+  {{ with .Params.updated }}<span>updated <time datetime="{{ . }}">{{ . }}</time></span>{{ end }}
+  {{ with .Params.verified }}<span class="badge badge-ok">verified against {{ $.Params.verifiedAgainst | default "Hexenwail 0.7.9" }} on {{ . }}</span>{{ end }}
+</p>
+{{ end }}

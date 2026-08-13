@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="{{ .Site.Language.Lang | default "en" }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
+  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+  <link rel="canonical" href="{{ .Permalink }}">
+  <link rel="stylesheet" href="{{ "css/main.css" | relURL }}">
+  {{ with .OutputFormats.Get "rss" }}<link rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }}" href="{{ .Permalink }}">{{ end }}
+  <meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
+  <meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+  <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+  <meta property="og:url" content="{{ .Permalink }}">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a class="brand" href="{{ "/" | relURL }}">
+      <span class="brand-mark" aria-hidden="true">&#10014;</span>
+      <span class="brand-text">
+        <strong>Thyrion</strong>
+        <small>a Hexen II community</small>
+      </span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <ul>
+        {{ range .Site.Menus.main }}
+          <li><a href="{{ .URL }}"{{ if $.IsMenuCurrent "main" . }} aria-current="page"{{ else if $.HasMenuCurrent "main" . }} aria-current="true"{{ end }}>{{ .Name }}</a></li>
+        {{ end }}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  {{ block "main" . }}{{ end }}
+</main>
+
+<footer class="site-foot">
+  <div class="wrap foot-grid">
+    <div>
+      <p class="foot-title">Thyrion</p>
+      <p class="muted">{{ .Site.Params.tagline }}</p>
+      <p class="muted small">Outbound links last verified {{ .Site.Params.linksVerified }}.</p>
+    </div>
+    <div>
+      <p class="foot-title">Site</p>
+      <ul class="bare">
+        {{ range .Site.Menus.footer }}<li><a href="{{ .URL }}">{{ .Name }}</a></li>{{ end }}
+        <li><a href="{{ "index.xml" | relURL }}">RSS</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="foot-title">Elsewhere</p>
+      <ul class="bare">
+        <li><a href="{{ .Site.Params.discord }}">Discord</a></li>
+        <li><a href="{{ .Site.Params.repo }}">Source (this site)</a></li>
+        <li><a href="http://earthday.free.fr/Inkys-Hexen-II-Mapping-Corner/">Inky's Mapping Corner</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap foot-legal">
+    <p class="muted small">
+      Static site, no database, no trackers. Content in git — fork it and it survives us.
+      Hexen II is &copy; Raven Software / id Software. Third-party mods and maps remain the property of their authors.
+    </p>
+  </div>
+</footer>
+</body>
+</html>

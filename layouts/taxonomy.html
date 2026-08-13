@@ -1,0 +1,17 @@
+{{ define "main" }}
+<div class="wrap">
+  {{ partial "breadcrumb.html" . }}
+  <header class="doc-head">
+    <h1>{{ .Title }}</h1>
+    <p class="lede">Every {{ .Data.Singular }} used across the site, with counts.</p>
+  </header>
+
+  <div class="prose">{{ .Content }}</div>
+
+  <nav class="filters">
+    {{ range .Pages.ByTitle }}
+      <a class="chip" href="{{ .RelPermalink }}">{{ .Title }} <span class="muted">{{ len .Pages }}</span></a>
+    {{ end }}
+  </nav>
+</div>
+{{ end }}

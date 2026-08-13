@@ -1,0 +1,74 @@
+{{ define "main" }}
+<div class="wrap">
+  {{ partial "breadcrumb.html" . }}
+  <header class="doc-head">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+  </header>
+
+  <div class="prose">{{ .Content }}</div>
+
+  {{ $c := hugo.Data.community }}
+
+  <h2 class="sec-head">Where the community actually is</h2>
+  <div class="cards">
+    {{ range $c.places }}
+      <div class="card card-static">
+        <h3>{{ .name }}</h3>
+        <p>{{ .desc }}</p>
+        <p><a href="{{ .url }}">{{ .url }}</a></p>
+        <p class="muted small">Verified {{ .verified }}{{ if .stale }} — <span class="badge badge-warn">may be stale</span>{{ end }}</p>
+      </div>
+    {{ end }}
+  </div>
+
+  <h2 class="sec-head">Active projects</h2>
+  <div class="db-table-wrap">
+    <table class="db-table">
+      <thead><tr><th>Project</th><th>What it is</th><th>Repo</th><th>Last checked</th></tr></thead>
+      <tbody>
+        {{ range $c.projects }}
+          <tr>
+            <td><strong>{{ .name }}</strong></td>
+            <td>{{ .desc }}</td>
+            <td class="small"><a href="{{ .url }}">{{ .repo }}</a></td>
+            <td class="small">{{ .verified }}</td>
+          </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="sec-head">People</h2>
+  <p class="muted">The webring idea, done as a plain page of outbound links. These are independent sites; we point at them, we do not absorb them.</p>
+  <ul class="listing">
+    {{ range $c.people }}
+      <li><strong>{{ .name }}</strong> <span class="muted">— {{ .role }}</span>
+        {{ with .url }}<br><a href="{{ . }}">{{ . }}</a>{{ end }}
+        <span class="muted small"> (verified {{ .verified }})</span>
+      </li>
+    {{ end }}
+  </ul>
+
+  <h2 class="sec-head">Servers</h2>
+  <aside class="callout">
+    <p>Hand-maintained and honest about it. A live query would need JavaScript and a proxy; this list works with both switched off.</p>
+  </aside>
+  <div class="db-table-wrap">
+    <table class="db-table">
+      <thead><tr><th>Name</th><th>Address</th><th>Game</th><th>Region</th><th>Last seen up</th></tr></thead>
+      <tbody>
+        {{ range $c.servers }}
+          <tr>
+            <td>{{ .name }}</td>
+            <td class="mono small">{{ .address }}</td>
+            <td class="small">{{ .game }}</td>
+            <td class="small">{{ .region }}</td>
+            <td class="small">{{ .verified }}</td>
+          </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+</div>
+{{ end }}

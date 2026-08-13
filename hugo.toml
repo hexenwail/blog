@@ -1,0 +1,82 @@
+baseURL = "https://hexen2.example/"
+locale = "en-us"
+title = "Thyrion — a Hexen II community"
+enableRobotsTXT = true
+enableGitInfo = false
+
+# Durability: no extension-less rot, no dates in evergreen paths.
+uglyURLs = false
+
+[params]
+  description = "News, maps, mods, mapping documentation and preserved history for Hexen II."
+  tagline = "The Serpent Riders are dead. The community is not."
+  # Rendered in the footer so link-rot sweeps have a visible deadline.
+  linksVerified = "2026-08-13"
+  discord = "https://discord.gg/EXAMPLE"
+  repo = "https://github.com/EXAMPLE/hexen2-community-site"
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[markup.highlight]
+  noClasses = false
+  style = "dracula"
+  lineNos = false
+
+[markup.tableOfContents]
+  startLevel = 2
+  endLevel = 3
+
+[taxonomies]
+  tag = "tags"
+  author = "authors"
+
+[menus]
+  [[menus.main]]
+    name = "Play"
+    pageRef = "/play"
+    weight = 10
+  [[menus.main]]
+    name = "Maps & Mods"
+    pageRef = "/maps"
+    weight = 20
+  [[menus.main]]
+    name = "Files"
+    pageRef = "/files"
+    weight = 30
+  [[menus.main]]
+    name = "Modding"
+    pageRef = "/modding"
+    weight = 40
+  [[menus.main]]
+    name = "Reference"
+    pageRef = "/reference"
+    weight = 50
+  [[menus.main]]
+    name = "Community"
+    pageRef = "/community"
+    weight = 60
+  [[menus.main]]
+    name = "Archive"
+    pageRef = "/archive"
+    weight = 70
+
+[[menus.footer]]
+  name = "About"
+  pageRef = "/about"
+  weight = 10
+[[menus.footer]]
+  name = "Contribute"
+  pageRef = "/contribute"
+  weight = 20
+[[menus.footer]]
+  name = "News archive"
+  pageRef = "/news"
+  weight = 30
+
+[outputs]
+  home = ["html", "rss"]
+  section = ["html", "rss"]
+
+[services.rss]
+  limit = -1

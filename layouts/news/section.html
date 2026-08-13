@@ -1,0 +1,30 @@
+{{ define "main" }}
+<div class="wrap">
+  {{ partial "breadcrumb.html" . }}
+  <header class="doc-head">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+    <p class="muted small">
+      Subscribe: <a href="{{ .RelPermalink }}index.xml">RSS</a> &middot;
+      <a href="{{ .RelPermalink }}index.xml">Atom</a> &middot; full content, no tracking pixels.
+    </p>
+  </header>
+
+  <div class="prose">{{ .Content }}</div>
+
+  {{ range .RegularPages.ByDate.Reverse }}
+    <article class="news-item">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time>
+      <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+      <p class="muted small">
+        {{ with .Params.authors }}by {{ delimit . ", " }}{{ end }}
+        {{ with .Params.tags }}&middot; {{ range . }}<a class="tag" href="{{ "tags/" | relURL }}{{ . | urlize }}/">{{ . }}</a>{{ end }}{{ end }}
+      </p>
+      <p>{{ .Summary | plainify | truncate 260 }}</p>
+      {{ with .Params.release }}
+        <p class="small"><a class="more" href="{{ "maps/" | relURL }}{{ . }}/">Database entry &rarr;</a></p>
+      {{ end }}
+    </article>
+  {{ end }}
+</div>
+{{ end }}

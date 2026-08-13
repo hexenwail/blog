@@ -1,0 +1,93 @@
+{{ define "main" }}
+<div class="wrap">
+  {{ partial "breadcrumb.html" . }}
+  <article class="doc">
+    <header class="doc-head">
+      <p class="kicker">{{ .Params.category }} entity</p>
+      <h1 class="mono">{{ .Title }}</h1>
+      {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+      <p class="small">
+        {{ range .Params.games }}<span class="badge">{{ . }}</span>{{ end }}
+      </p>
+    </header>
+
+    <div class="split">
+      <div class="prose">
+        {{ .Content }}
+
+        {{ with .Params.keys }}
+          <h2>Keys</h2>
+          <div class="db-table-wrap">
+            <table class="db-table">
+              <thead><tr><th>Key</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+              <tbody>
+                {{ range . }}
+                  <tr>
+                    <td class="mono">{{ .key }}</td>
+                    <td class="small">{{ .type }}</td>
+                    <td class="mono small">{{ .default | default "—" }}</td>
+                    <td>{{ .desc }}</td>
+                  </tr>
+                {{ end }}
+              </tbody>
+            </table>
+          </div>
+        {{ end }}
+
+        {{ with .Params.spawnflags }}
+          <h2>Spawnflags</h2>
+          <div class="db-table-wrap">
+            <table class="db-table">
+              <thead><tr><th>Bit</th><th>Value</th><th>Name</th><th>Effect</th></tr></thead>
+              <tbody>
+                {{ range . }}
+                  <tr>
+                    <td class="mono small">{{ .bit }}</td>
+                    <td class="mono small">{{ .value }}</td>
+                    <td class="mono">{{ .name }}</td>
+                    <td>{{ .desc }}</td>
+                  </tr>
+                {{ end }}
+              </tbody>
+            </table>
+          </div>
+        {{ end }}
+
+        {{ with .Params.example }}
+          <h2>Worked example</h2>
+          {{ highlight . "ini" "" }}
+        {{ end }}
+      </div>
+
+      <aside class="factbox">
+        {{ with .Params.related }}
+          <h2 class="sec-head">Related entities</h2>
+          <ul class="bare tight">
+            {{ range . }}
+              {{ $p := site.GetPage (printf "/reference/%s" (. | urlize)) }}
+              <li>{{ with $p }}<a class="mono" href="{{ .RelPermalink }}">{{ .Title }}</a>{{ else }}<span class="mono muted">{{ . }}</span>{{ end }}</li>
+            {{ end }}
+          </ul>
+        {{ end }}
+
+        {{ $name := .Title }}
+        {{ $uses := where (where site.RegularPages "Section" "modding") "Params.entities" "intersect" (slice $name) }}
+        {{ with $uses }}
+          <h2 class="sec-head">Talked about in</h2>
+          <ul class="bare tight">
+            {{ range . }}<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>{{ end }}
+          </ul>
+        {{ end }}
+
+        {{ with .Params.ravenMaps }}
+          <h2 class="sec-head">Used in shipped maps</h2>
+          <p class="muted small">Counted mechanically from the retail entity lumps.</p>
+          <ul class="bare tight small mono">
+            {{ range . }}<li>{{ .map }} <span class="muted">&times;{{ .count }}</span></li>{{ end }}
+          </ul>
+        {{ end }}
+      </aside>
+    </div>
+  </article>
+</div>
+{{ end }}

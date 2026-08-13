@@ -1,0 +1,43 @@
+{{ define "main" }}
+<div class="wrap">
+  {{ partial "breadcrumb.html" . }}
+  <header class="doc-head">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+  </header>
+
+  <div class="prose">{{ .Content }}</div>
+
+  {{ $entries := hugo.Data.files.entries }}
+  {{ range hugo.Data.files.categories }}
+    {{ $cat := . }}
+    <section class="filecat">
+      <h2 class="sec-head" id="{{ $cat.id }}">{{ $cat.name }}</h2>
+      <p class="muted">{{ $cat.blurb }}</p>
+      {{ range where $entries "category" $cat.id }}
+        <div class="file-row" id="{{ .id }}">
+          <div class="file-main">
+            <h3>{{ .name }} <span class="muted small">{{ .version }}</span>
+              {{ if .essential }}<span class="badge badge-ok">essential</span>{{ end }}
+            </h3>
+            <p class="muted small">{{ .author }} &middot; {{ .date }} &middot; {{ .size }} &middot; {{ .license }}</p>
+            <p>{{ .desc }}</p>
+            <p class="mono small muted break">sha256:{{ .sha256 }}</p>
+          </div>
+          <div class="file-links">
+            <a class="btn btn-small" href="{{ .primary }}">Download</a>
+            <ul class="bare tight small">
+              {{ range .mirrors }}<li><a href="{{ .url }}">{{ .label }}</a></li>{{ end }}
+            </ul>
+          </div>
+        </div>
+      {{ end }}
+    </section>
+  {{ end }}
+
+  <aside class="callout callout-warn">
+    <p><strong>We do not host retail game data.</strong> <code>pak0.pak</code> and friends are not ours to distribute.
+    See <a href="{{ "play/get-the-game/" | relURL }}">Get the game</a> for where to buy Hexen II and Portal of Praevus.</p>
+  </aside>
+</div>
+{{ end }}

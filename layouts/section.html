@@ -1,0 +1,33 @@
+{{ define "main" }}
+<div class="wrap">
+  {{ partial "breadcrumb.html" . }}
+  <header class="doc-head">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+  </header>
+
+  <div class="prose">{{ .Content }}</div>
+
+  {{ $pages := .RegularPages }}
+  {{ if $pages }}
+    <ul class="listing">
+      {{ range $pages.ByWeight }}
+        <li>
+          <a href="{{ .RelPermalink }}"><strong>{{ .Title }}</strong></a>
+          {{ with .Description }}<span class="muted"> — {{ . }}</span>{{ end }}
+          {{ with .Params.verified }}<span class="badge badge-ok">verified {{ . }}</span>{{ end }}
+        </li>
+      {{ end }}
+    </ul>
+  {{ end }}
+
+  {{ with .Sections }}
+    <ul class="listing">
+      {{ range . }}
+        <li><a href="{{ .RelPermalink }}"><strong>{{ .Title }}</strong></a>
+        {{ with .Description }}<span class="muted"> — {{ . }}</span>{{ end }}</li>
+      {{ end }}
+    </ul>
+  {{ end }}
+</div>
+{{ end }}

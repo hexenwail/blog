@@ -1,0 +1,33 @@
+{{ define "main" }}
+<div class="wrap">
+  {{ partial "breadcrumb.html" . }}
+  <article class="doc">
+    <header class="doc-head">
+      <p class="kicker"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time></p>
+      <h1>{{ .Title }}</h1>
+      {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+      <p class="muted small">
+        {{ with .Params.authors }}by {{ delimit . ", " }}{{ end }}
+        {{ with .Params.tags }}&middot; {{ range . }}<a class="tag" href="{{ "tags/" | relURL }}{{ . | urlize }}/">{{ . }}</a>{{ end }}{{ end }}
+      </p>
+    </header>
+
+    <div class="prose">{{ .Content }}</div>
+
+    {{ with .Params.release }}
+      {{ $rel := site.GetPage (printf "/maps/%s" .) }}
+      {{ with $rel }}
+        <aside class="callout callout-link">
+          <p><strong>Permanent entry:</strong> this release has a database page that stays current even when this post ages —
+          <a href="{{ .RelPermalink }}">{{ .Title }}</a>.</p>
+        </aside>
+      {{ end }}
+    {{ end }}
+
+    <nav class="prevnext">
+      {{ with .PrevInSection }}<a href="{{ .RelPermalink }}">&larr; {{ .Title }}</a>{{ end }}
+      {{ with .NextInSection }}<a class="right" href="{{ .RelPermalink }}">{{ .Title }} &rarr;</a>{{ end }}
+    </nav>
+  </article>
+</div>
+{{ end }}

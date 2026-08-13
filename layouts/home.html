@@ -1,0 +1,94 @@
+{{ define "main" }}
+
+<section class="hero">
+  <div class="wrap">
+    <p class="kicker">Est. 2026 &middot; static, in git, no database</p>
+    <h1>{{ .Site.Params.tagline }}</h1>
+    <p class="lede">{{ .Site.Params.description }} Lorem ipsum dolor sit amet, consectetur adipiscing elit. Hexenworld.com went dark in 2002; hexenworld.org went dark in 2025. This one is a folder of Markdown files, so it goes dark only if everyone forgets to fork it.</p>
+    <p class="hero-cta">
+      <a class="btn" href="{{ "play/" | relURL }}">Start playing</a>
+      <a class="btn btn-ghost" href="{{ "modding/getting-set-up/" | relURL }}">Make your first map</a>
+    </p>
+  </div>
+</section>
+
+<div class="wrap grid-2">
+  <section>
+    <h2 class="sec-head">Latest news</h2>
+    {{ range first 4 (where .Site.RegularPages "Section" "news") }}
+      <article class="news-row">
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 Jan 2006" }}</time>
+        <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+        <p class="muted">{{ .Summary | plainify | truncate 160 }}</p>
+      </article>
+    {{ end }}
+    <p><a class="more" href="{{ "news/" | relURL }}">All news &amp; archive &rarr;</a></p>
+  </section>
+
+  <aside>
+    <section class="panel">
+      <h2 class="sec-head">Recent releases</h2>
+      <ul class="bare tight">
+        {{ range first 5 (sort (where .Site.RegularPages "Section" "maps") "Params.released" "desc") }}
+          <li>
+            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            <span class="muted small">— {{ delimit .Params.authors ", " }}, {{ .Params.released }}</span>
+          </li>
+        {{ end }}
+      </ul>
+      <p><a class="more" href="{{ "maps/" | relURL }}">Browse the database &rarr;</a></p>
+    </section>
+
+    <section class="panel">
+      <h2 class="sec-head">Essential files</h2>
+      <ul class="bare tight">
+        {{ range where hugo.Data.files.entries "essential" true }}
+          <li><a href="{{ "files/" | relURL }}#{{ .id }}">{{ .name }}</a> <span class="muted small">{{ .version }}</span></li>
+        {{ end }}
+      </ul>
+      <p><a class="more" href="{{ "files/" | relURL }}">Full download archive &rarr;</a></p>
+    </section>
+
+    <section class="panel panel-quiet">
+      <h2 class="sec-head">Preservation status</h2>
+      <dl class="stat">
+        <dt>Releases indexed</dt><dd>{{ len (where .Site.RegularPages "Section" "maps") }}</dd>
+        <dt>Entities documented</dt><dd>{{ len (where .Site.RegularPages "Section" "reference") }}</dd>
+        <dt>Tutorials</dt><dd>{{ len (where .Site.RegularPages "Section" "modding") }}</dd>
+      </dl>
+      <p class="muted small">Lorem ipsum: counts are generated at build time from <code>data/</code>, not typed by hand, so they cannot drift.</p>
+    </section>
+  </aside>
+</div>
+
+<section class="wrap band">
+  <h2 class="sec-head">Where to go</h2>
+  <div class="cards">
+    <a class="card" href="{{ "play/" | relURL }}">
+      <h3>Play</h3>
+      <p>Get the game, pick an engine, fix the audio, learn the four classes. Lorem ipsum dolor sit amet.</p>
+    </a>
+    <a class="card" href="{{ "maps/" | relURL }}">
+      <h3>Maps &amp; Mods</h3>
+      <p>Every release we can find, with engine requirements and checksummed downloads. Consectetur adipiscing elit.</p>
+    </a>
+    <a class="card" href="{{ "modding/" | relURL }}">
+      <h3>Modding</h3>
+      <p>TrenchBroom to first compile, then the tricks nobody wrote down. Sed do eiusmod tempor incididunt.</p>
+    </a>
+    <a class="card" href="{{ "reference/" | relURL }}">
+      <h3>Reference</h3>
+      <p>Every entity, every key, every spawnflag — cross-indexed to the tutorials that use it.</p>
+    </a>
+    <a class="card" href="{{ "community/" | relURL }}">
+      <h3>Community</h3>
+      <p>Discord, active projects, the people still building. Ut enim ad minim veniam.</p>
+    </a>
+    <a class="card" href="{{ "archive/" | relURL }}">
+      <h3>Archive</h3>
+      <p>Interviews, <code>.plan</code> updates, and what happened to HexenWorld. Quis nostrud exercitation.</p>
+    </a>
+  </div>
+</section>
+
+{{ end }}

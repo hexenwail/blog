@@ -1,0 +1,382 @@
+# One record per entity. These generate /reference/<name>/ pages via
+# content/reference/_content.gotmpl — no hand-written HTML, no 150 orphan files.
+# Descriptions below are placeholder prose; the schema is the real deliverable.
+
+- name: func_door
+  category: brush
+  games: [Hexen II, Portal of Praevus, HexenWorld]
+  summary: A brush that slides open when triggered or touched.
+  body: |
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. The workhorse brush entity:
+    a door that translates along an axis derived from `angle`, waits, and returns.
+
+    Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Note that in
+    Hexen II the lock/key behaviour differs from Quake — the puzzle-piece system routes
+    through `t_width` rather than a keyed item, which is the single most common thing
+    Quake mappers get wrong on their first Hexen II map.
+  keys:
+    - {key: angle, type: float, default: "0", desc: "Direction of travel. -1 = up, -2 = down."}
+    - {key: speed, type: float, default: "100", desc: "Units per second while moving."}
+    - {key: wait, type: float, default: "3", desc: "Seconds open before auto-close. -1 stays open."}
+    - {key: lip, type: float, default: "8", desc: "Units left protruding when fully open."}
+    - {key: dmg, type: float, default: "2", desc: "Damage dealt when the door crushes the player."}
+    - {key: targetname, type: string, default: "", desc: "Name, if the door is opened by a trigger rather than touch."}
+    - {key: sounds, type: integer, default: "1", desc: "Sound set index. Lorem ipsum."}
+  spawnflags:
+    - {bit: "0", value: "1", name: START_OPEN, desc: "Spawns in the open position; moves to closed on trigger."}
+    - {bit: "2", value: "4", name: DOOR_DONT_LINK, desc: "Do not auto-link with touching doors."}
+    - {bit: "5", value: "32", name: TOGGLE, desc: "Each trigger flips state instead of opening and auto-closing."}
+  related: [func_door_rotating, func_door_secret, func_button]
+  example: |
+    {
+    "classname" "func_door"
+    "angle" "-1"
+    "speed" "100"
+    "wait" "4"
+    "lip" "8"
+    "targetname" "gate_courtyard"
+    }
+  ravenMaps:
+    - {map: "keep1.bsp", count: 14}
+    - {map: "tower.bsp", count: 9}
+    - {map: "cath.bsp", count: 22}
+
+- name: func_door_rotating
+  category: brush
+  games: [Hexen II, Portal of Praevus, HexenWorld]
+  summary: A door that swings around an origin brush instead of sliding.
+  body: |
+    Lorem ipsum dolor sit amet. Requires an origin brush to define the hinge; without one
+    the door rotates about the world origin and flies off the map, which is the classic
+    first-attempt failure and the reason this entity has a tutorial of its own.
+  keys:
+    - {key: angle, type: float, default: "0", desc: "Facing; combined with the hinge to determine swing direction."}
+    - {key: distance, type: float, default: "90", desc: "Degrees of rotation when opening."}
+    - {key: speed, type: float, default: "100", desc: "Degrees per second."}
+    - {key: wait, type: float, default: "3", desc: "Seconds open before auto-close."}
+  spawnflags:
+    - {bit: "0", value: "1", name: START_OPEN, desc: "Spawns rotated open."}
+    - {bit: "1", value: "2", name: REVERSE, desc: "Swing the opposite way."}
+    - {bit: "6", value: "64", name: X_AXIS, desc: "Rotate about X instead of Z."}
+    - {bit: "7", value: "128", name: Y_AXIS, desc: "Rotate about Y instead of Z."}
+  related: [func_door, func_rotating, func_rotating_movec]
+  example: |
+    {
+    "classname" "func_door_rotating"
+    "distance" "110"
+    "speed" "60"
+    "targetname" "chapel_doors"
+    // remember the origin brush
+    }
+  ravenMaps:
+    - {map: "cath.bsp", count: 6}
+    - {map: "village.bsp", count: 3}
+
+- name: func_door_secret
+  category: brush
+  games: [Hexen II, Portal of Praevus]
+  summary: A door that pushes back and slides aside, Quake-style, for hidden areas.
+  body: |
+    Consectetur adipiscing elit. Two-stage movement — recess, then shift — used for the
+    hidden alcoves in the Blackmarsh hubs. Pairs with the secret-counter approach described
+    in the secrets tutorial.
+  keys:
+    - {key: wait, type: float, default: "5", desc: "Seconds before returning."}
+    - {key: dmg, type: float, default: "2", desc: "Crush damage."}
+  spawnflags:
+    - {bit: "0", value: "1", name: OPEN_ONCE, desc: "Never returns."}
+    - {bit: "1", value: "2", name: FIRST_LEFT, desc: "Shift left rather than right."}
+    - {bit: "2", value: "4", name: FIRST_DOWN, desc: "Shift down rather than sideways."}
+  related: [func_door, trigger_secret]
+  example: |
+    {
+    "classname" "func_door_secret"
+    "spawnflags" "1"
+    "wait" "5"
+    }
+
+- name: func_train_mp
+  category: brush
+  games: [Hexen II, Portal of Praevus]
+  summary: A moving platform that follows a path of corners, with mid-path control.
+  body: |
+    Ut enim ad minim veniam. The multi-purpose train — the `_mp` variant Raven added over
+    the Quake original — accepts stop/start targeting mid-path, which is what makes lifts,
+    barges and the rolling siege engine possible.
+
+    Quis nostrud exercitation ullamco laboris. Note the known engine-side interaction where
+    monsters fail to path onto a moving train brush; see the community bug tracker.
+  keys:
+    - {key: target, type: string, default: "", desc: "First path_corner in the loop."}
+    - {key: speed, type: float, default: "100", desc: "Units per second."}
+    - {key: sounds, type: integer, default: "0", desc: "Movement sound set."}
+    - {key: dmg, type: float, default: "0", desc: "Damage on blocked."}
+  spawnflags:
+    - {bit: "0", value: "1", name: START_ON, desc: "Begins moving at map load."}
+    - {bit: "3", value: "8", name: NONSOLID, desc: "Does not block movement."}
+  related: [path_corner, func_rotating, func_angletrigger]
+  example: |
+    {
+    "classname" "func_train_mp"
+    "target" "barge_corner_1"
+    "speed" "64"
+    "sounds" "2"
+    }
+  ravenMaps:
+    - {map: "docks.bsp", count: 4}
+
+- name: func_illusionary
+  category: brush
+  games: [Hexen II, Portal of Praevus, HexenWorld]
+  summary: Visible geometry the player walks straight through.
+  body: |
+    Duis aute irure dolor in reprehenderit. Deceptively load-bearing: it is the standard
+    answer to leak-sealing, to fake foliage, to ladder rungs, and to any place where you
+    want the look of a brush without its collision or its BSP cost.
+  keys:
+    - {key: alpha, type: float, default: "1", desc: "Translucency, where the engine supports it."}
+  spawnflags: []
+  related: [func_wall, func_detail, clip]
+  example: |
+    {
+    "classname" "func_illusionary"
+    "alpha" "0.6"
+    }
+  ravenMaps:
+    - {map: "romeric1.bsp", count: 31}
+    - {map: "meso1.bsp", count: 18}
+
+- name: breakable_brush
+  category: brush
+  games: [Hexen II, Portal of Praevus, HexenWorld]
+  summary: A brush that shatters into debris models when damaged.
+  body: |
+    Excepteur sint occaecat cupidatat non proident. Hexen II's signature destructible —
+    crates, urns, stained glass. The debris model and its skin are both selectable, which
+    is the hook the "change the skin of a 3D model" tutorial pulls on.
+  keys:
+    - {key: health, type: float, default: "20", desc: "Damage absorbed before breaking."}
+    - {key: dmg, type: float, default: "0", desc: "Damage dealt to nearby entities when it breaks."}
+    - {key: mdl_debris, type: string, default: "", desc: "Debris model spawned on break."}
+    - {key: skin, type: integer, default: "0", desc: "Skin index on the debris model."}
+    - {key: sounds, type: integer, default: "0", desc: "Break sound: wood, stone, glass, metal."}
+  spawnflags:
+    - {bit: "0", value: "1", name: TRIGGER_ONLY, desc: "Immune to damage; breaks only when triggered."}
+  related: [func_illusionary, trigger_multiple]
+  example: |
+    {
+    "classname" "breakable_brush"
+    "health" "30"
+    "sounds" "3"
+    "mdl_debris" "models/shard.mdl"
+    }
+  ravenMaps:
+    - {map: "village.bsp", count: 47}
+    - {map: "egypt2.bsp", count: 39}
+
+- name: func_button
+  category: brush
+  games: [Hexen II, Portal of Praevus, HexenWorld]
+  summary: A brush that fires its target when pressed or shot.
+  body: |
+    Lorem ipsum dolor sit amet. Depresses along `angle`, fires `target`, waits, returns.
+    The building block of every event chain on the site.
+  keys:
+    - {key: angle, type: float, default: "0", desc: "Direction the button moves when pressed."}
+    - {key: target, type: string, default: "", desc: "What it fires."}
+    - {key: wait, type: float, default: "1", desc: "Seconds before returning. -1 stays pressed."}
+    - {key: health, type: float, default: "0", desc: "If set, must be shot rather than touched."}
+  spawnflags: []
+  related: [func_angletrigger, trigger_once, func_door]
+  example: |
+    {
+    "classname" "func_button"
+    "angle" "90"
+    "target" "chain_step_2"
+    "wait" "-1"
+    }
+
+- name: func_angletrigger
+  category: brush
+  games: [Hexen II, Portal of Praevus]
+  summary: Fires when a rotating entity reaches a given angle.
+  body: |
+    Sed ut perspiciatis unde omnis iste natus error. The piece that turns rotation into
+    logic — a wheel that only unlocks the gate once it has been cranked far enough.
+    Central to both parts of the event-chaining tutorial.
+  keys:
+    - {key: target, type: string, default: "", desc: "Fired when the angle threshold is crossed."}
+    - {key: angle, type: float, default: "0", desc: "Threshold angle."}
+  spawnflags: []
+  related: [func_rotating, func_button, func_pressure]
+  example: |
+    {
+    "classname" "func_angletrigger"
+    "angle" "180"
+    "target" "portcullis_raise"
+    }
+
+- name: func_pressure
+  category: brush
+  games: [Hexen II, Portal of Praevus]
+  summary: A plate that fires while weight rests on it.
+  body: |
+    Nemo enim ipsam voluptatem quia voluptas. Continuous rather than edge-triggered, which
+    is what lets you build "hold this down while the other thing happens" puzzles without
+    any HexenC at all.
+  keys:
+    - {key: target, type: string, default: "", desc: "Fired on press."}
+    - {key: targetname, type: string, default: "", desc: "Name, for enabling/disabling."}
+    - {key: health, type: float, default: "1", desc: "Weight threshold. Lorem ipsum."}
+  spawnflags: []
+  related: [func_button, func_angletrigger]
+  example: |
+    {
+    "classname" "func_pressure"
+    "target" "bridge_extend"
+    }
+
+- name: func_rotating
+  category: brush
+  games: [Hexen II, Portal of Praevus, HexenWorld]
+  summary: A brush that spins continuously about an origin brush.
+  body: |
+    At vero eos et accusamus et iusto odio. Windmills, gears, spiked hazards. Needs an
+    origin brush; combine with func_angletrigger to make the rotation mean something.
+  keys:
+    - {key: speed, type: float, default: "100", desc: "Degrees per second."}
+    - {key: dmg, type: float, default: "2", desc: "Damage on contact."}
+  spawnflags:
+    - {bit: "0", value: "1", name: START_ON, desc: "Spinning at map load."}
+    - {bit: "6", value: "64", name: X_AXIS, desc: "Spin about X."}
+    - {bit: "7", value: "128", name: Y_AXIS, desc: "Spin about Y."}
+  related: [func_door_rotating, func_angletrigger, func_train_mp]
+  example: |
+    {
+    "classname" "func_rotating"
+    "speed" "45"
+    "spawnflags" "1"
+    }
+
+- name: path_corner
+  category: point
+  games: [Hexen II, Portal of Praevus, HexenWorld]
+  summary: A waypoint in a train's path.
+  body: |
+    Temporibus autem quibusdam et aut officiis. Chain them with `target`; the last one
+    pointing back at the first makes a loop. `wait` pauses the train here.
+  keys:
+    - {key: targetname, type: string, default: "", desc: "Name the train or previous corner points at."}
+    - {key: target, type: string, default: "", desc: "The next corner."}
+    - {key: wait, type: float, default: "0", desc: "Seconds to pause here. -1 waits for a retrigger."}
+  spawnflags: []
+  related: [func_train_mp]
+  example: |
+    {
+    "classname" "path_corner"
+    "targetname" "barge_corner_1"
+    "target" "barge_corner_2"
+    "wait" "2"
+    }
+
+- name: trigger_multiple
+  category: trigger
+  games: [Hexen II, Portal of Praevus, HexenWorld]
+  summary: A volume that fires every time it is entered.
+  body: |
+    Nam libero tempore, cum soluta nobis est eligendi. The general-purpose volume trigger.
+    `wait` is the retrigger delay, not a duration, which trips people up constantly.
+  keys:
+    - {key: target, type: string, default: "", desc: "Fired on touch."}
+    - {key: wait, type: float, default: "0.2", desc: "Seconds before it can fire again."}
+    - {key: health, type: float, default: "0", desc: "If set, must be shot."}
+    - {key: message, type: string, default: "", desc: "Centreprint shown on trigger."}
+  spawnflags: []
+  related: [trigger_once, trigger_secret, func_pressure]
+  example: |
+    {
+    "classname" "trigger_multiple"
+    "target" "ambush_spawn"
+    "wait" "5"
+    }
+
+- name: trigger_once
+  category: trigger
+  games: [Hexen II, Portal of Praevus, HexenWorld]
+  summary: A volume that fires exactly once.
+  body: |
+    Itaque earum rerum hic tenetur a sapiente delectus. Identical to trigger_multiple with
+    a permanent latch. Use it for objective beats you do not want the player to farm.
+  keys:
+    - {key: target, type: string, default: "", desc: "Fired on first touch."}
+    - {key: message, type: string, default: "", desc: "Centreprint shown on trigger."}
+  spawnflags: []
+  related: [trigger_multiple, trigger_secret]
+  example: |
+    {
+    "classname" "trigger_once"
+    "target" "objective_update_1"
+    "message" "The seal is broken."
+    }
+
+- name: trigger_secret
+  category: trigger
+  games: [Hexen II, Portal of Praevus]
+  summary: Increments the secret counter.
+  body: |
+    Ut aut reiciendis voluptatibus maiores. Hexen II does not surface secrets the way Quake
+    does out of the box; the "Quake-style secrets" tutorial covers wiring the counter and
+    the notification message.
+  keys:
+    - {key: message, type: string, default: "You found a secret!", desc: "Centreprint on discovery."}
+    - {key: sounds, type: integer, default: "1", desc: "Notification sound."}
+  spawnflags: []
+  related: [trigger_once, func_door_secret]
+  example: |
+    {
+    "classname" "trigger_secret"
+    "message" "You found a secret!"
+    }
+
+- name: info_player_start
+  category: point
+  games: [Hexen II, Portal of Praevus, HexenWorld]
+  summary: Single-player spawn point.
+  body: |
+    Omnis voluptas assumenda est. Exactly one per map, or the compiler complains and the
+    engine picks arbitrarily. `angle` sets facing on spawn.
+  keys:
+    - {key: angle, type: float, default: "0", desc: "Facing on spawn."}
+  spawnflags: []
+  related: [info_player_deathmatch, info_player_coop]
+  example: |
+    {
+    "classname" "info_player_start"
+    "origin" "128 -64 32"
+    "angle" "90"
+    }
+
+- name: light
+  category: light
+  games: [Hexen II, Portal of Praevus, HexenWorld]
+  summary: A static light source, compiled into the lightmap.
+  body: |
+    Temporibus autem quibusdam. Compile-time only unless given a `targetname`, in which case
+    the compiler emits a switchable style. Colour via `_color` where the compiler supports it.
+  keys:
+    - {key: light, type: float, default: "300", desc: "Brightness."}
+    - {key: wait, type: float, default: "1", desc: "Falloff scale."}
+    - {key: _color, type: vector, default: "1 1 1", desc: "RGB tint, ericw-tools extension."}
+    - {key: style, type: integer, default: "0", desc: "Animation style index."}
+    - {key: targetname, type: string, default: "", desc: "Makes the light switchable."}
+  spawnflags: []
+  related: [light_torch_small_walltorch, info_null]
+  example: |
+    {
+    "classname" "light"
+    "light" "220"
+    "_color" "1.0 0.82 0.55"
+    }
+  ravenMaps:
+    - {map: "keep1.bsp", count: 188}
+    - {map: "cath.bsp", count: 241}

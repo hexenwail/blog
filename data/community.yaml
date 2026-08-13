@@ -1,0 +1,75 @@
+places:
+  - name: Hexen II Discord
+    desc: >
+      Where the day-to-day conversation happens: mapping help, engine builds, playtests.
+      Lorem ipsum dolor sit amet.
+    url: "https://discord.gg/EXAMPLE"
+    verified: "2026-08-13"
+    stale: false
+  - name: func_msgboard
+    desc: >
+      The Quake mapping board. Hexen II releases get posted here and get real feedback.
+    url: "https://www.celephais.net/board/"
+    verified: "2026-08-13"
+    stale: false
+  - name: Quaddicted forums
+    desc: >
+      Adjacent community, deep archive of mapping knowledge that mostly transfers.
+    url: "https://www.quaddicted.com/forum/"
+    verified: "2026-08-13"
+    stale: false
+  - name: "r/heretic_hexen"
+    desc: >
+      Low traffic, occasional finds. Consectetur adipiscing elit, sed do eiusmod.
+    url: "https://reddit.com/r/heretic_hexen"
+    verified: "2026-05-02"
+    stale: true
+
+projects:
+  - name: Hexenwail
+    desc: "GL 4.3 engine fork tracking Ironwail's rendering work."
+    repo: "github.com/EXAMPLE/hexenwail"
+    url: "https://github.com/EXAMPLE/hexenwail"
+    verified: "2026-08-13"
+  - name: uHexen2
+    desc: "Hammer of Thyrion — the conservative reference port."
+    repo: "sourceforge.net/projects/uhexen2"
+    url: "https://sourceforge.net/projects/uhexen2/"
+    verified: "2026-08-13"
+  - name: FTEQW
+    desc: "Multi-game engine with HexenWorld and CSQC support."
+    repo: "fte.triptohell.info"
+    url: "https://fte.triptohell.info/"
+    verified: "2026-08-13"
+  - name: "Wheel Of Karma"
+    desc: "Inky's episodic project plus the Karmaverse extended-universe proposal."
+    repo: "earthday.free.fr"
+    url: "http://earthday.free.fr/Inkys-Hexen-II-Mapping-Corner/Wheel-Of-Karma.html"
+    verified: "2026-08-13"
+
+people:
+  - name: Inky
+    role: "mapper; Wheel Of Karma; author of the tips & tricks corner and MapSearch"
+    url: "http://earthday.free.fr/Inkys-Hexen-II-Mapping-Corner/"
+    verified: "2026-08-13"
+  - name: WhirledTsar
+    role: "mapper; Tales of the Arabian Deadly Nights"
+    url: ""
+    verified: "2026-08-13"
+  - name: IronFox
+    role: "mapper; Privateer's Hold"
+    url: ""
+    verified: "2026-08-13"
+  - name: Garyou
+    role: "mapper; The Tomb of Osiris"
+    url: ""
+    verified: "2026-08-13"
+  - name: Spike
+    role: "engine developer; FTEQW, HexenWorld netcode"
+    url: "https://fte.triptohell.info/"
+    verified: "2026-08-13"
+
+servers:
+  - {name: "Thyrion EU #1", address: "hw.example.eu:26900", game: "HexenWorld", region: "EU", verified: "2026-08-11"}
+  - {name: "Thyrion NA #1", address: "hw.example.us:26900", game: "HexenWorld", region: "NA", verified: "2026-08-11"}
+  - {name: "Coop Nights",   address: "coop.example.net:26950", game: "Hexen II coop", region: "EU", verified: "2026-07-28"}

@@ -1,0 +1,25 @@
+{{ define "main" }}
+<div class="wrap">
+  {{ partial "breadcrumb.html" . }}
+  <article class="doc">
+    <header class="doc-head">
+      <h1>{{ .Title }}</h1>
+      {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+      {{ partial "meta.html" . }}
+    </header>
+
+    {{ if and (gt (len .TableOfContents) 100) (not .Params.notoc) }}
+      <nav class="toc" aria-label="On this page">
+        <p class="toc-title">On this page</p>
+        {{ .TableOfContents }}
+      </nav>
+    {{ end }}
+
+    <div class="prose">
+      {{ .Content }}
+    </div>
+
+    {{ partial "entity-refs.html" . }}
+  </article>
+</div>
+{{ end }}
