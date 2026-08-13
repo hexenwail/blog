@@ -1,0 +1,46 @@
+{{ define "main" }}
+<div class="wrap">
+  <article class="doc">
+    <header class="doc-head">
+      <p class="kicker">This page moved</p>
+      <h1 class="mono">{{ .Params.legacyHost }}{{ .Params.legacyPath }}</h1>
+      <p class="lede">{{ .Params.note }}</p>
+    </header>
+
+    <div class="prose">
+      <p>
+        You followed a link to <code>{{ .Params.legacyHost }}{{ .Params.legacyPath }}</code>.
+        That host is gone —
+        {{ if eq .Params.legacyHost "hexenworld.com" }}
+          hexenworld.com was Raven Software's official Hexen II site, absorbed into GameSpy
+          in 2002 and offline ever since.
+        {{ else }}
+          hexenworld.org was the WordPress-era community hub; it went offline around
+          March&nbsp;2025.
+        {{ end }}
+      </p>
+
+      {{ with .Params.target }}
+        <aside class="callout callout-link">
+          <p><strong>Our equivalent:</strong> <a href="{{ . | relURL }}">{{ . }}</a></p>
+          <p class="muted small">Rewritten for the present day, not a copy of the original page.</p>
+        </aside>
+      {{ else }}
+        <aside class="callout callout-warn">
+          <p class="callout-label">No equivalent here</p>
+          <p>We have nothing that replaces this yet, and may never. The capture below is the
+          real thing.</p>
+        </aside>
+      {{ end }}
+
+      <p><a class="btn btn-ghost btn-small" href="{{ .Params.wayback }}">Read the Internet Archive capture &rarr;</a></p>
+
+      <p class="muted small">
+        Every legacy path we know about is listed on the <a href="{{ "moved/" | relURL }}">old links</a> page.
+        If you have a dead hexenworld link that is not covered, <a href="{{ "contribute/" | relURL }}">tell us</a>
+        and we will add it.
+      </p>
+    </div>
+  </article>
+</div>
+{{ end }}

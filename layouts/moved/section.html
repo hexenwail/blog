@@ -1,0 +1,36 @@
+{{ define "main" }}
+<div class="wrap">
+  {{ partial "breadcrumb.html" . }}
+  <header class="doc-head">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+  </header>
+
+  <div class="prose">{{ .Content }}</div>
+
+  {{ range .RegularPages.GroupByParam "legacyHost" }}
+    <h2 class="sec-head">{{ .Key }}</h2>
+    <div class="db-table-wrap">
+      <table class="db-table">
+        <thead><tr><th>Old path</th><th>What was there</th><th>Now</th></tr></thead>
+        <tbody>
+          {{ range .Pages }}
+            <tr>
+              <td class="mono small">{{ .Params.legacyPath }}</td>
+              <td>{{ .Params.note }}</td>
+              <td class="small">
+                {{ with .Params.target }}
+                  <a href="{{ . | relURL }}">{{ . }}</a>
+                {{ else }}
+                  <span class="badge badge-warn">no equivalent</span>
+                {{ end }}
+                <br><a href="{{ .Params.wayback }}">Wayback capture</a>
+              </td>
+            </tr>
+          {{ end }}
+        </tbody>
+      </table>
+    </div>
+  {{ end }}
+</div>
+{{ end }}

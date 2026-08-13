@@ -60,6 +60,10 @@ uglyURLs = false
     name = "Archive"
     pageRef = "/archive"
     weight = 70
+  [[menus.main]]
+    name = "Search"
+    pageRef = "/search"
+    weight = 80
 
 [[menus.footer]]
   name = "About"
@@ -73,9 +77,35 @@ uglyURLs = false
   name = "News archive"
   pageRef = "/news"
   weight = 30
+[[menus.footer]]
+  name = "Old hexenworld links"
+  pageRef = "/moved"
+  weight = 40
+
+# Build-time search index + server redirect rules, emitted from the home page.
+[mediaTypes."text/netlify"]
+  suffixes = []
+[mediaTypes."text/apache"]
+  suffixes = []
+
+[outputFormats.SearchIndex]
+  mediaType = "application/json"
+  baseName = "search-index"
+  isPlainText = true
+  notAlternative = true
+[outputFormats.Redirects]
+  mediaType = "text/netlify"
+  baseName = "_redirects"
+  isPlainText = true
+  notAlternative = true
+[outputFormats.Htaccess]
+  mediaType = "text/apache"
+  baseName = ".htaccess"
+  isPlainText = true
+  notAlternative = true
 
 [outputs]
-  home = ["html", "rss"]
+  home = ["html", "rss", "SearchIndex", "Redirects", "Htaccess"]
   section = ["html", "rss"]
 
 [services.rss]

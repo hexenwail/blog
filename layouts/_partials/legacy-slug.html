@@ -1,0 +1,6 @@
+{{- /* Canonical slug for a legacy path. Used by the content adapter that creates the
+       /moved/ pages AND by the _redirects/.htaccess templates, so the rules always
+       point at pages that exist. Takes a dict: {host, from}. */ -}}
+{{- $p := .from | strings.TrimSuffix "/" -}}
+{{- $p = $p | strings.TrimSuffix ".html" | strings.TrimSuffix ".htm" | strings.TrimSuffix ".shtml" -}}
+{{- return printf "%s%s" .host $p -}}

@@ -1,0 +1,26 @@
+{{/*
+  Generates a landing page for every legacy path in data/oldlinks.yaml.
+
+  These are deliberately visible pages rather than silent 302s. Someone arriving
+  from a 2001 forum post deserves to be told what used to be here and where it
+  went — a silent redirect to a vaguely related page is how you lose people.
+
+  The slug comes from partials/legacy-slug.html, which the _redirects and
+  .htaccess templates also use, so the rules cannot point at pages that do not exist.
+*/}}
+{{ range hugo.Data.oldlinks }}
+  {{ $slug := partial "legacy-slug.html" (dict "host" .host "from" .from) }}
+  {{ $params := dict
+      "legacyPath" .from
+      "legacyHost" .host
+      "target"     .to
+      "wayback"    .wayback
+      "note"       .note
+  }}
+  {{ $.AddPage (dict
+      "path"        $slug
+      "title"       (printf "%s%s" .host .from)
+      "description" .note
+      "params"      $params
+  ) }}
+{{ end }}

@@ -412,6 +412,30 @@ pre code { background: none; padding: 0; }
 .foot-legal { padding-bottom: 2rem; border-top: 1px solid var(--rule); padding-top: 1.2rem; }
 .foot-legal p { margin: 0; max-width: 70ch; }
 
+/* --- search ---------------------------------------------------------------- */
+
+.searchbox { margin-block: 1.5rem 1rem; max-width: var(--measure); }
+.searchbox input[type="search"] {
+  width: 100%; padding: .7rem .9rem;
+  background: var(--bg-2); color: var(--ink);
+  border: 1px solid var(--rule); border-radius: 4px;
+  font: inherit; font-size: 1.05rem;
+}
+.searchbox input[type="search"]:focus {
+  outline: 2px solid var(--gold); outline-offset: 1px; border-color: var(--gold);
+}
+.searchbox input[type="search"]::placeholder { color: var(--ink-3); }
+.searchbox p { margin: .45rem 0 0; }
+.results:empty { display: none; }
+.results .sec-head:first-of-type { margin-top: 1.2rem; }
+#fallback[hidden] { display: none; }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
 /* --- utilities ------------------------------------------------------------- */
 
 .muted { color: var(--ink-2); }

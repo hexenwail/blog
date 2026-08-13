@@ -8,11 +8,21 @@ Corresponds to beads epic `uhexen2-96ii`.
 ## Build
 
 ```sh
-hugo server      # http://localhost:1313
-hugo             # writes ./public
+make serve       # dev server on :1313
+make build       # canonical build for the real domain
+make portable    # subdirectory-safe build (relative URLs)
+make check       # build + link/consistency checks
+make deploy      # portable build, checked, rsynced to copyparty
 ```
 
-No theme module, no npm, no plugins. Hugo binary + this repo = the site.
+No theme module, no npm, no plugins. Hugo binary + this repo = the site. The checker
+wants PyYAML; without it the data checks are skipped with a warning rather than failing.
+
+**Two build modes.** `build` emits root-absolute URLs for the real domain. `portable`
+sets `relativeURLs`, so every link resolves relative to its own page and the site works
+unchanged from a subdirectory — copyparty, a USB stick, a Wayback capture. Both modes are
+checked in CI, because "servable from a plain file host" is a claim that rots silently
+unless something tests it.
 
 ## Why it is built this way
 
@@ -49,7 +59,7 @@ layouts/                      no theme; templates live here
 static/css/main.css           one stylesheet, no external fonts
 ```
 
-## The two generated things worth noticing
+## The generated things worth noticing
 
 1. **`/reference/`** — entity pages are generated at build time from `data/entities.yaml`
    by `content/reference/_content.gotmpl`. The old hexenworld.com had ~150 hand-written
@@ -60,6 +70,21 @@ static/css/main.css           one stylesheet, no external fonts
    declarations into a table. It cannot disagree with the tutorials because it is derived
    from them.
 
+3. **`/moved/` — the old-link map.** `data/oldlinks.yaml` records the legacy paths people
+   still link to (`hexenworld.com/h2entities/`, `/walk/`, `/siege/`, `hexenworld.org/downloads/`,
+   …). From that one file Hugo generates a landing page per path, the human-readable table
+   at `/moved/`, **and** the server rules in `_redirects` and `.htaccess`. All three share
+   `partials/legacy-slug.html`, so a redirect can never point at a page that does not exist
+   — CI asserts exactly that. Where we have an equivalent page the visitor is sent there;
+   where we do not, they get the Wayback capture and an explanation rather than a 404.
+
+4. **Search.** `layouts/home.searchindex.json` emits a static index at build time; the
+   search page is ~90 lines of vanilla JS with no dependency and no query leaving the
+   browser. Entity *key names and spawnflag names* are indexed explicitly, because those
+   live in template-rendered tables rather than page text — searching `START_OPEN` or
+   `mdl_debris` is the realistic case. With JS off, the page still lists every entity,
+   tutorial, release, guide and tag.
+
 ## What is placeholder
 
 - All body prose is lorem ipsum or first-draft filler.
@@ -67,7 +92,20 @@ static/css/main.css           one stylesheet, no external fonts
 - Screenshots are CSS placeholders — no images are committed.
 - Domain, Discord invite and repo URL in `hugo.toml` are placeholders.
 
+## Checks
+
+`scripts/check-links.py` runs offline and fails the build on:
+
+- an internal link that resolves to no built page (in *either* build mode — relative
+  hrefs are resolved against the page directory, as a browser would)
+- a `_redirects` rule pointing at a `/moved/` page that does not exist
+- a download without a 64-char SHA-256, or with fewer than two links
+- an outbound link record missing a `verified:` date, or older than `--max-age` (180d)
+
+`--external` additionally HEADs every outbound URL. That runs on a schedule, not per
+commit: a third-party host being down should not block a typo fix from merging.
+
 ## Still to build
 
-Client-side search (Pagefind), the old-URL redirect map for `hexenworld.com/*` and
-`hexenworld.org/*`, CI link checking, and the archetypes. See the epic's child issues.
+Real prose to replace the filler, real screenshots, the walkthroughs section, and the
+`.plan`/interview recovery work. See the epic's child issues.

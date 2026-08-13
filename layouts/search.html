@@ -1,0 +1,190 @@
+{{ define "main" }}
+<div class="wrap">
+  {{ partial "breadcrumb.html" . }}
+  <article class="doc">
+    <header class="doc-head">
+      <h1>{{ .Title }}</h1>
+      {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+    </header>
+
+    <form class="searchbox" id="searchbox" role="search" onsubmit="return false;">
+      <label class="visually-hidden" for="q">Search the site</label>
+      <input type="search" id="q" name="q" autocomplete="off" spellcheck="false"
+             placeholder="entity name, map, author, &ldquo;rotating door&rdquo;&hellip;">
+      <p class="muted small" id="searchstatus">Loading index&hellip;</p>
+    </form>
+
+    {{/* The index URL rides on an <a href>, not a JS string literal: Hugo's
+         relativeURLs rewriter only touches href/src attributes, and the browser
+         resolves .href to an absolute URL for us. Works from the site root and
+         from a subdirectory (copyparty, a USB stick, a Wayback capture) alike. */}}
+    <a id="index-url" href="{{ "search-index.json" | relURL }}" hidden></a>
+
+    <div id="results" class="results" aria-live="polite"></div>
+
+    <div class="prose">{{ .Content }}</div>
+
+    <noscript>
+      <aside class="callout callout-note">
+        <p class="callout-label">JavaScript is off</p>
+        <p>Search needs it; browsing does not. Everything on this site is reachable from
+        the lists below.</p>
+      </aside>
+    </noscript>
+
+    <section id="fallback">
+      <h2 class="sec-head">Browse everything</h2>
+
+      <h3 class="cat-head">Entities ({{ len (where site.RegularPages "Section" "reference") }})</h3>
+      <ul class="ent-grid">
+        {{ range (where site.RegularPages "Section" "reference").ByTitle }}
+          <li><a class="mono" href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+        {{ end }}
+      </ul>
+
+      <h3 class="cat-head">Tutorials</h3>
+      <ul class="bare tight">
+        {{ range (where site.RegularPages "Section" "modding").ByTitle }}
+          <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+        {{ end }}
+      </ul>
+
+      <h3 class="cat-head">Releases</h3>
+      <ul class="bare tight">
+        {{ range (where site.RegularPages "Section" "maps").ByTitle }}
+          <li><a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            <span class="muted small">— {{ delimit .Params.authors ", " }}</span></li>
+        {{ end }}
+      </ul>
+
+      <h3 class="cat-head">Guides</h3>
+      <ul class="bare tight">
+        {{ range (where site.RegularPages "Section" "play").ByTitle }}
+          <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+        {{ end }}
+      </ul>
+
+      <h3 class="cat-head">News</h3>
+      <ul class="bare tight">
+        {{ range (where site.RegularPages "Section" "news").ByDate.Reverse }}
+          <li><a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            <span class="muted small">{{ .Date.Format "2006-01-02" }}</span></li>
+        {{ end }}
+      </ul>
+
+      <h3 class="cat-head">Archive</h3>
+      <ul class="bare tight">
+        {{ range (where site.RegularPages "Section" "archive").ByTitle }}
+          <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+        {{ end }}
+      </ul>
+
+      <h3 class="cat-head">Tags</h3>
+      <nav class="filters">
+        {{ range $t, $p := (index site.Taxonomies "tags") }}
+          <a class="chip" href="{{ "tags/" | relURL }}{{ $t | urlize }}/">{{ $t }} <span class="muted">{{ len $p }}</span></a>
+        {{ end }}
+      </nav>
+    </section>
+  </article>
+</div>
+
+<script>
+(function () {
+  var input  = document.getElementById('q');
+  var status = document.getElementById('searchstatus');
+  var out    = document.getElementById('results');
+  var fall   = document.getElementById('fallback');
+  var docs   = null;
+
+  var LABELS = {
+    reference: 'Reference', modding: 'Modding', maps: 'Maps & Mods',
+    play: 'Play', news: 'News', archive: 'Archive', files: 'Files',
+    community: 'Community', page: 'Site'
+  };
+
+  fetch(document.getElementById('index-url').href)
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      docs = data.docs;
+      status.textContent = docs.length + ' pages indexed. Type to search.';
+      var q = new URLSearchParams(location.search).get('q');
+      if (q) { input.value = q; run(q); }
+    })
+    .catch(function () {
+      status.textContent = 'Could not load the search index — use the lists below.';
+    });
+
+  function score(doc, terms) {
+    var s = 0;
+    for (var i = 0; i < terms.length; i++) {
+      var t = terms[i];
+      var hit = 0;
+      if (doc.t.toLowerCase().indexOf(t) !== -1) hit += 10;
+      if (doc.x.toLowerCase().indexOf(t) !== -1) hit += 6;
+      if (doc.h.toLowerCase().indexOf(t) !== -1) hit += 4;
+      if (doc.d.toLowerCase().indexOf(t) !== -1) hit += 3;
+      if (doc.b.toLowerCase().indexOf(t) !== -1) hit += 1;
+      if (!hit) return 0;               // every term must appear somewhere
+      if (doc.t.toLowerCase() === t) hit += 25;
+      s += hit;
+    }
+    return s;
+  }
+
+  function esc(s) {
+    return s.replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function run(q) {
+    var terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+    if (!docs || !terms.length) { out.innerHTML = ''; fall.hidden = false; return; }
+
+    var hits = [];
+    for (var i = 0; i < docs.length; i++) {
+      var s = score(docs[i], terms);
+      if (s > 0) hits.push({ d: docs[i], s: s });
+    }
+    hits.sort(function (a, b) { return b.s - a.s || a.d.t.localeCompare(b.d.t); });
+
+    fall.hidden = true;
+
+    if (!hits.length) {
+      out.innerHTML = '<p class="muted">Nothing matched &ldquo;' + esc(q) +
+                      '&rdquo;. Try a single word, or browse below.</p>';
+      fall.hidden = false;
+      return;
+    }
+
+    var groups = {}, order = [];
+    hits.forEach(function (h) {
+      var k = h.d.s;
+      if (!groups[k]) { groups[k] = []; order.push(k); }
+      groups[k].push(h.d);
+    });
+
+    var html = '<p class="muted small">' + hits.length + ' result' +
+               (hits.length === 1 ? '' : 's') + '</p>';
+    order.forEach(function (k) {
+      html += '<h2 class="sec-head">' + esc(LABELS[k] || k) + '</h2><ul class="listing">';
+      groups[k].forEach(function (d) {
+        html += '<li><a href="' + esc(d.u) + '"><strong>' + esc(d.t) + '</strong></a>';
+        if (d.d) html += '<br><span class="muted">' + esc(d.d) + '</span>';
+        html += '</li>';
+      });
+      html += '</ul>';
+    });
+    out.innerHTML = html;
+  }
+
+  var timer;
+  input.addEventListener('input', function () {
+    clearTimeout(timer);
+    var v = input.value;
+    timer = setTimeout(function () { run(v); }, 90);
+  });
+})();
+</script>
+{{ end }}

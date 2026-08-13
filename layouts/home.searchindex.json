@@ -1,0 +1,35 @@
+{{- /* Build-time search index. No search server, no third-party widget,
+       no query ever leaving the visitor's browser. */ -}}
+{{- $docs := slice -}}
+{{- range where site.RegularPages "Section" "ne" "moved" -}}
+  {{- $section := .Section | default "page" -}}
+  {{- $extra := slice -}}
+  {{- with .Params.entities }}{{ $extra = $extra | append . }}{{ end -}}
+  {{- with .Params.authors  }}{{ $extra = $extra | append . }}{{ end -}}
+  {{- with .Params.tags     }}{{ $extra = $extra | append . }}{{ end -}}
+  {{- with .Params.category }}{{ $extra = $extra | append . }}{{ end -}}
+  {{- with .Params.releaseType }}{{ $extra = $extra | append . }}{{ end -}}
+  {{- with .Params.engine   }}{{ $extra = $extra | append . }}{{ end -}}
+  {{- with .Params.classes  }}{{ $extra = $extra | append . }}{{ end -}}
+  {{- with .Params.modes    }}{{ $extra = $extra | append . }}{{ end -}}
+  {{- with .Params.related  }}{{ $extra = $extra | append . }}{{ end -}}
+  {{- /* Entity key and spawnflag names live in template-rendered tables, not in
+         .Plain, so index them explicitly — "targetname" and "START_OPEN" are
+         exactly the things someone types while staring at an editor. */ -}}
+  {{- range .Params.keys       }}{{ $extra = $extra | append .key  }}{{ end -}}
+  {{- range .Params.spawnflags }}{{ $extra = $extra | append .name }}{{ end -}}
+  {{- if .Params.spawnflags }}{{ $extra = $extra | append "spawnflags" }}{{ end -}}
+  {{- if .Params.keys       }}{{ $extra = $extra | append "keys" }}{{ end -}}
+  {{- $headings := slice -}}
+  {{- range .Fragments.Headings }}{{ $headings = $headings | append .Title }}{{ end -}}
+  {{- $docs = $docs | append (dict
+        "t" .Title
+        "u" .RelPermalink
+        "s" $section
+        "d" (.Description | default "")
+        "h" (delimit $headings " ")
+        "x" (delimit $extra " ")
+        "b" (.Plain | plainify | truncate 1200 "")
+      ) -}}
+{{- end -}}
+{{- dict "count" (len $docs) "docs" $docs | jsonify -}}

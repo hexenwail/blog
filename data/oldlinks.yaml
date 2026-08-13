@@ -1,0 +1,117 @@
+# Old-link map.
+#
+# Two decades of forum posts, wikis and bookmarks point at hexenworld.com and
+# hexenworld.org paths. Both hosts are gone. Where we have an equivalent page we
+# send people to it; where we do not, we send them to the Wayback capture rather
+# than returning a 404. A dead link that explains itself beats a dead link.
+#
+#   from:    the legacy path, as it appeared on the old host
+#   host:    which dead site it belonged to
+#   to:      our equivalent page (omit if we have none)
+#   wayback: capture URL, always recorded even when `to` is set
+#   note:    what used to be there, in one line
+
+- from: /h2entities/
+  host: hexenworld.com
+  to: /reference/
+  wayback: "https://web.archive.org/web/2002/http://www.hexenworld.com/h2entities/"
+  note: "~150-page hand-written Hexen II entity encyclopedia."
+
+- from: /walk/
+  host: hexenworld.com
+  wayback: "https://web.archive.org/web/2001/http://www.hexenworld.com/walk/"
+  note: "Walkthroughs for the retail campaign, plus cheats and secrets pages."
+
+- from: /hexdev/
+  host: hexenworld.com
+  to: /modding/
+  wayback: "https://web.archive.org/web/2001/http://www.hexenworld.com/hexdev/"
+  note: "HexenC and HexenWorld development docs, CTF and HexMatch source drops."
+
+- from: /citadel/
+  host: hexenworld.com
+  to: /modding/
+  wayback: "https://web.archive.org/web/2001/http://www.hexenworld.com/citadel/"
+  note: "Mapping site: lighting and template files, file archives."
+
+- from: /workshop/
+  host: hexenworld.com
+  to: /modding/
+  wayback: "https://web.archive.org/web/2001/http://www.hexenworld.com/workshop/"
+  note: "Mapping site with downloads, MIDI collection and links."
+
+- from: /mappersshrine2/
+  host: hexenworld.com
+  to: /maps/
+  wayback: "https://web.archive.org/web/2001/http://www.hexenworld.com/mappersshrine2/"
+  note: "Mapper's Shrine II — level releases and download index."
+
+- from: /stables/
+  host: hexenworld.com
+  to: /files/
+  wayback: "https://web.archive.org/web/2000/http://www.hexenworld.com/stables/"
+  note: "The Hexen II Stables — the site's 'definitive' file archive."
+
+- from: /siege/
+  host: hexenworld.com
+  to: /maps/
+  wayback: "https://web.archive.org/web/2001/http://www.hexenworld.com/siege/"
+  note: "Siege mod hub: attacker/defender guides, class docs, archives."
+
+- from: /hwctf/
+  host: hexenworld.com
+  to: /maps/
+  wayback: "https://web.archive.org/web/2001/http://www.hexenworld.com/hwctf/"
+  note: "HexenWorld CTF — design docs and rules."
+
+- from: /features/
+  host: hexenworld.com
+  to: /archive/interviews/
+  wayback: "https://web.archive.org/web/2001/http://www.hexenworld.com/features/"
+  note: "Articles and interviews, incl. E3 Heretic II coverage."
+
+- from: /skins/
+  host: hexenworld.com
+  wayback: "https://web.archive.org/web/2001/http://www.hexenworld.com/skins/"
+  note: "Player skins, per class."
+
+- from: /classes.html
+  host: hexenworld.com
+  to: /play/classes/
+  wayback: "https://web.archive.org/web/2000/http://www.hexenworld.com/classes.html"
+  note: "The four classes. One of the few pages still actively searched for."
+
+- from: /h2faq.html
+  host: hexenworld.com
+  to: /play/troubleshooting/
+  wayback: "https://web.archive.org/web/2000/http://www.hexenworld.com/h2faq.html"
+  note: "Official FAQ — the glide2x.dll era of tech support."
+
+- from: /board/
+  host: hexenworld.com
+  to: /community/
+  wayback: "https://web.archive.org/web/2001/http://www.hexenworld.com/board/"
+  note: "The message board, 100k+ posts. Not rebuilt — see the community page."
+
+- from: /downloads/
+  host: hexenworld.org
+  to: /files/
+  wayback: "https://web.archive.org/web/2024/https://hexenworld.org/downloads/"
+  note: "Downloads section of the WordPress-era site."
+
+- from: /test-builds/
+  host: hexenworld.org
+  to: /files/
+  wayback: "https://web.archive.org/web/2024/https://hexenworld.org/"
+  note: "Engine test builds."
+
+- from: /webtool/
+  host: hexenworld.org
+  wayback: "https://web.archive.org/web/2024/https://hexenworld.org/"
+  note: "Hexen II and Heretic II webtools. No surviving equivalent."
+
+- from: /changelog/
+  host: hexenworld.org
+  to: /news/
+  wayback: "https://web.archive.org/web/2024/https://hexenworld.org/"
+  note: "Engine changelog."
