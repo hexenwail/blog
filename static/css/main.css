@@ -88,7 +88,7 @@ a:focus-visible, button:focus-visible {
   padding-block: .8rem;
 }
 .brand { display: flex; align-items: center; gap: .65rem; text-decoration: none; color: inherit; }
-.brand-mark { color: var(--gold); font-size: 1.6rem; line-height: 1; }
+.brand-mark { color: var(--gold); flex: none; display: block; }
 .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
 .brand-text strong {
   font-family: var(--serif); font-size: 1.3rem; letter-spacing: .02em; font-weight: 600;
