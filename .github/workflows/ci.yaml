@@ -1,0 +1,80 @@
+name: build-and-check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # Outbound link rot is swept weekly rather than per-commit, so a third-party
+  # host being down never blocks a typo fix from merging.
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+env:
+  HUGO_VERSION: 0.163.3
+
+jobs:
+  build:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Hugo (extended)
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl -sSL -o /tmp/hugo.tar.gz \
+            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz"
+          tar -xzf /tmp/hugo.tar.gz -C "$HOME/.local/bin" hugo
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - run: hugo version
+
+      - name: Install checker deps
+        run: pip install --quiet pyyaml
+
+      - name: Build
+        run: hugo --gc --cleanDestinationDir --printPathWarnings
+
+      # Offline checks: internal links, redirect targets, checksum presence,
+      # and the age of every `verified:` date. Fails the build on any of them.
+      - name: Link and consistency check
+        run: python3 scripts/check-links.py --public public --max-age 180
+
+      - name: Portable build still works from a subdirectory
+        run: |
+          HUGO_RELATIVEURLS=true hugo --gc --cleanDestinationDir
+          python3 scripts/check-links.py --public public --max-age 180
+
+  external-links:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Hugo (extended)
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl -sSL -o /tmp/hugo.tar.gz \
+            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz"
+          tar -xzf /tmp/hugo.tar.gz -C "$HOME/.local/bin" hugo
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install checker deps
+        run: pip install --quiet pyyaml
+
+      # The checker reads the built site, so this job has to build too — it is
+      # not a bare checkout-and-run.
+      - name: Build
+        run: hugo --gc --cleanDestinationDir
+
+      - name: Sweep outbound links
+        run: python3 scripts/check-links.py --public public --max-age 180 --external

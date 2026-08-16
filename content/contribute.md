@@ -12,12 +12,14 @@ you are not imposing.
 ## If you do use git
 
 ```sh
-git clone https://github.com/EXAMPLE/hexen2-community-site
-cd hexen2-community-site
+git clone https://github.com/hexenwail/blog
+cd blog
 hugo server        # http://localhost:1313
 ```
 
-Then copy the relevant archetype and open a pull request.
+Then copy the relevant archetype and open a pull request. You do not need an account on
+our server — a GitHub fork and a pull request is the whole path in. CI builds your branch
+and runs the link checks before anyone reviews it.
 
 ## Adding a release to the database
 

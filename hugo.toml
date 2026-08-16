@@ -13,7 +13,7 @@ uglyURLs = false
   # Rendered in the footer so link-rot sweeps have a visible deadline.
   linksVerified = "2026-08-13"
   discord = "https://discord.gg/EXAMPLE"
-  repo = "https://github.com/EXAMPLE/hexen2-community-site"
+  repo = "https://github.com/hexenwail/blog"
 
 [markup.goldmark.renderer]
   unsafe = true
