@@ -12,11 +12,36 @@ make serve       # dev server on :1313
 make build       # canonical build for the real domain
 make portable    # subdirectory-safe build (relative URLs)
 make check       # build + link/consistency checks
-make deploy      # portable build, checked, rsynced to copyparty
 ```
 
 No theme module, no npm, no plugins. Hugo binary + this repo = the site. The checker
 wants PyYAML; without it the data checks are skipped with a warning rather than failing.
+
+## Publishing
+
+GitHub is the source of truth. The file host pulls *from* it and never the other way
+round, so contributing needs a merged pull request and nothing else — no account on the
+server, no ssh key, no shell.
+
+On the server:
+
+```sh
+blog-deploy              # pull from GitHub, build, check, publish
+blog-deploy --dry-run    # show exactly what would change, write nothing
+```
+
+That runs `scripts/deploy-server.sh`, which hard-resets its clone to `origin/main`,
+builds in portable mode, runs the link checks, and rsyncs **only `public/`** onto the
+file host. A failed check publishes nothing and leaves the live site untouched.
+
+**It is manual on purpose.** No timer, no cron entry, no webhook. Merging is a
+conversation between contributors; publishing is a decision, and it stays one. The
+server holds no credentials either: the clone is public HTTPS, so there is no deploy
+key on the box to steal.
+
+`make publish-local` pushes the working tree straight to the file host, skipping
+GitHub. It exists for when the remote is unreachable and something has to go out now;
+the next `blog-deploy` overwrites whatever it published.
 
 **Two build modes.** `build` emits root-absolute URLs for the real domain. `portable`
 sets `relativeURLs`, so every link resolves relative to its own page and the site works
