@@ -148,6 +148,16 @@ static/css/main.css           one stylesheet, no external fonts
 - Screenshots are CSS placeholders — no images are committed.
 - The Discord invite in `hugo.toml` is a placeholder.
 
+Because of all that, `noindex = true` in `hugo.toml` keeps the site out of search
+results: every page carries `<meta name="robots" content="noindex, nofollow">`. Being
+the top result for "hexen 2 downloads" while the checksums are dummies would be worse
+than not being found at all. **Delete that one line when the content is real.**
+
+Note that `robots.txt` is *not* the mechanism and must not become one. It is ignored
+entirely while the site is served from a subdirectory, and blocking a crawler hides the
+noindex tag rather than the page — a blocked-but-linked URL can still be listed, as a
+bare link with no description. `layouts/robots.txt` says so, at length, to whoever tries.
+
 ## Checks
 
 `scripts/check-links.py` runs offline and fails the build on:

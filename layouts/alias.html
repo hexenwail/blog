@@ -1,0 +1,22 @@
+{{- /*
+  Overrides Hugo's built-in alias template for one reason: to add noindex.
+
+  These stubs are the legacy paths from data/oldlinks.yaml — the URLs most
+  likely to be linked from outside, and therefore the most likely to be crawled.
+  Hugo's own template omits the tag, which left the 18 old-link pages as the
+  only crawlable pages on the site without it.
+
+  Unlike the site-wide `noindex` param this is unconditional, and stays that way
+  when the content becomes real: an alias is a redirect, never a page. What
+  belongs in an index is the target it points at.
+*/ -}}
+<!DOCTYPE html>
+<html lang="{{ with .Page }}{{ .Language.Lang }}{{ else }}en{{ end }}">
+  <head>
+    <title>{{ .Permalink }}</title>
+    <link rel="canonical" href="{{ .Permalink }}">
+    <meta name="robots" content="noindex">
+    <meta charset="utf-8">
+    <meta http-equiv="refresh" content="0; url={{ .Permalink }}">
+  </head>
+</html>

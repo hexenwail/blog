@@ -11,6 +11,14 @@ enableGitInfo = false
 uglyURLs = false
 
 [params]
+  # Keep the site out of search results while the prose is lorem ipsum, the
+  # checksums are dummies and the download URLs say EXAMPLE. Being the top
+  # result for "hexen 2 downloads" with placeholder data would be worse than
+  # not being found at all — and the two hubs this replaces are remembered
+  # partly for what stopped being true on them.
+  #
+  # Delete this line when the content is real. That is the whole switch.
+  noindex = true
   description = "News, maps, mods, mapping documentation and preserved history for Hexen II."
   tagline = "The Serpent Riders are dead. The community is not."
   # Rendered in the footer so link-rot sweeps have a visible deadline.

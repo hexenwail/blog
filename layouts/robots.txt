@@ -1,0 +1,18 @@
+{{- /* Crawling is deliberately allowed, including while the site is noindexed. */ -}}
+# Crawling is allowed on purpose. Please do not add Disallow rules here to keep
+# this site out of search results — it would have the opposite effect.
+#
+# While the content is still placeholder, every page carries
+# <meta name="robots" content="noindex, nofollow">. A crawler has to fetch a
+# page to see that tag. Disallowing a path hides the tag rather than the page,
+# and a URL that is blocked but linked from somewhere else can still be listed
+# in results — as a bare URL with no description, which is worse. Blocking here
+# would produce more indexing, not less.
+#
+# The switch is `noindex` in hugo.toml. Remove it when the prose is real.
+#
+# Note also that this file does nothing at all while the site is served from a
+# subdirectory: robots.txt is only honoured at a domain root. It starts
+# mattering when hexenworld.org points here.
+User-agent: *
+Disallow:
