@@ -1,0 +1,54 @@
+{{/*
+  Not-found page, and the safety net under the legacy-link map.
+
+  data/oldlinks.yaml enumerates the old *sections*, and each gets a real redirect
+  page via the content adapter's aliases. What cannot be enumerated is everything
+  beneath them — /walk/secrets.html, /h2entities/monsters.html and the rest of two
+  decades of deep links. Those land here, so they get an explanation and a route
+  onward instead of a bare error.
+
+  Every link below uses absURL, not relURL. A server hands this page back for the
+  URL the visitor asked for, so a relative href would resolve against *that* path
+  (/walk/secrets.html), not against the site root, and every link would break in
+  exactly the case the page exists to handle.
+*/}}
+{{ define "main" }}
+<div class="wrap">
+  <article class="doc">
+    <header class="doc-head">
+      <p class="kicker">404</p>
+      <h1>That page is not here</h1>
+      <p class="lede">It may never have been, or it may have belonged to a site that is gone.</p>
+    </header>
+
+    <div class="prose">
+      <p>
+        If you arrived from an old bookmark or a forum post, you were probably following a
+        link to <code>hexenworld.com</code> or <code>hexenworld.org</code>. Both of those
+        hosts are dead. We keep a map of everything we know they used to serve, and where
+        it went.
+      </p>
+
+      <aside class="callout callout-link">
+        <p><strong>Try the old-link map:</strong>
+          <a href="{{ "moved/" | absURL }}">every legacy path we have accounted for</a></p>
+        <p class="muted small">
+          If the page you wanted has an equivalent here, that is where it is recorded —
+          along with the Internet Archive capture where it does not.
+        </p>
+      </aside>
+
+      <p>
+        <a class="btn btn-ghost btn-small" href="{{ "search/" | absURL }}">Search the site &rarr;</a>
+        <a class="btn btn-ghost btn-small" href="{{ "" | absURL }}">Go to the front page &rarr;</a>
+      </p>
+
+      <p class="muted small">
+        Found a dead hexenworld link we have not covered?
+        <a href="{{ "contribute/" | absURL }}">Tell us</a> and we will add it to the map.
+        That is the whole point of keeping one.
+      </p>
+    </div>
+  </article>
+</div>
+{{ end }}

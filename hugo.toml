@@ -1,4 +1,7 @@
-baseURL = "https://hexen2.example/"
+# Canonical home. The site is reachable at other names, but every feed link,
+# sitemap entry, canonical tag and generated redirect resolves against this one,
+# so it is the address the site claims as its own.
+baseURL = "https://hexenworld.org/"
 locale = "en-us"
 title = "Thyrion — a Hexen II community"
 enableRobotsTXT = true

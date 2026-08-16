@@ -109,10 +109,22 @@ static/css/main.css           one stylesheet, no external fonts
 3. **`/moved/` — the old-link map.** `data/oldlinks.yaml` records the legacy paths people
    still link to (`hexenworld.com/h2entities/`, `/walk/`, `/siege/`, `hexenworld.org/downloads/`,
    …). From that one file Hugo generates a landing page per path, the human-readable table
-   at `/moved/`, **and** the server rules in `_redirects` and `.htaccess`. All three share
-   `partials/legacy-slug.html`, so a redirect can never point at a page that does not exist
-   — CI asserts exactly that. Where we have an equivalent page the visitor is sent there;
-   where we do not, they get the Wayback capture and an explanation rather than a 404.
+   at `/moved/`, a **redirect page at each legacy path itself**, and the server rules in
+   `_redirects` and `.htaccess`. They all share `partials/legacy-slug.html`, so a redirect
+   can never point at a page that does not exist — CI asserts exactly that, and separately
+   asserts that every legacy path really got its redirect page. Where we have an equivalent
+   page the visitor is sent there; where we do not, they get the Wayback capture and an
+   explanation rather than a 404.
+
+   The redirect pages are the part that actually moves people, and they are plain HTML.
+   `_redirects` and `.htaccess` are an optimisation for hosts that read them — such a host
+   issues a real 301 — but nothing depends on the server understanding anything, so the old
+   links keep working from nginx, a plain file server, a USB stick or a Wayback capture
+   alike. The previous two Hexen II hubs died together with their server configuration.
+
+   Deep paths under a legacy prefix (`/walk/secrets.html`) cannot be enumerated and fall
+   through to `layouts/404.html`, which explains the situation and points at `/moved/`
+   instead of showing a bare error.
 
 4. **Search.** `layouts/home.searchindex.json` emits a static index at build time; the
    search page is ~90 lines of vanilla JS with no dependency and no query leaving the
@@ -126,7 +138,7 @@ static/css/main.css           one stylesheet, no external fonts
 - All body prose is lorem ipsum or first-draft filler.
 - SHA-256 values are dummies; download URLs point at `EXAMPLE`.
 - Screenshots are CSS placeholders — no images are committed.
-- Domain, Discord invite and repo URL in `hugo.toml` are placeholders.
+- The Discord invite in `hugo.toml` is a placeholder.
 
 ## Checks
 

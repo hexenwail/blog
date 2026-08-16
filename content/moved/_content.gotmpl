@@ -7,6 +7,18 @@
 
   The slug comes from partials/legacy-slug.html, which the _redirects and
   .htaccess templates also use, so the rules cannot point at pages that do not exist.
+
+  `aliases` is what actually moves a visitor. Hugo builds a real redirect page at
+  each legacy path, so the old links work on *any* host — nginx, a plain file
+  server, a USB stick, a Wayback capture. The _redirects and .htaccess outputs stay
+  because a host that understands them issues a proper 301 instead, but nothing
+  depends on the server understanding anything. That is the whole architecture
+  argument of this site applied to its own redirects: the previous two Hexen II
+  hubs died with their server configuration, and this one must not.
+
+  Deep paths under a legacy prefix (/walk/secrets.html) cannot be enumerated, so
+  they fall through to layouts/404.html, which explains the situation rather than
+  showing a bare error.
 */}}
 {{ range hugo.Data.oldlinks }}
   {{ $slug := partial "legacy-slug.html" (dict "host" .host "from" .from) }}
@@ -18,6 +30,7 @@
       "note"       .note
   }}
   {{ $.AddPage (dict
+      "aliases"     (slice .from)
       "path"        $slug
       "title"       (printf "%s%s" .host .from)
       "description" .note

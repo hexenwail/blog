@@ -125,6 +125,28 @@ def check_redirects(public: str, routes: set[str]) -> int:
     return n
 
 
+def check_aliases(oldlinks_yaml, routes: set[str]) -> int:
+    """Every legacy path must have a built redirect page at the path itself.
+
+    The _redirects/.htaccess outputs only work on hosts that read them; the
+    aliases are what make an old link resolve anywhere. If an alias silently
+    stops being generated, the rules keep looking correct while every twenty-
+    year-old bookmark quietly 404s — so this asserts the page is really there.
+    """
+    if not oldlinks_yaml:
+        return 0
+    n = 0
+    for rec in oldlinks_yaml:
+        frm = rec.get("from")
+        if not frm:
+            fail("oldlinks: record with no `from:`")
+            continue
+        n += 1
+        if frm not in routes:
+            fail(f"legacy path '{frm}' has no redirect page (alias missing)")
+    return n
+
+
 def check_downloads(files_yaml) -> int:
     if not files_yaml:
         return 0
@@ -216,7 +238,9 @@ def main() -> int:
 
     files_yaml = load_yaml("data/files.yaml") if os.path.exists("data/files.yaml") else None
     community_yaml = load_yaml("data/community.yaml") if os.path.exists("data/community.yaml") else None
+    oldlinks_yaml = load_yaml("data/oldlinks.yaml") if os.path.exists("data/oldlinks.yaml") else None
 
+    n_alias = check_aliases(oldlinks_yaml, routes)
     n_dl = check_downloads(files_yaml)
     n_ver = check_verified(community_yaml, args.max_age)
     n_ext = check_external(community_yaml, files_yaml) if args.external else 0
@@ -224,6 +248,7 @@ def main() -> int:
     print(f"routes:            {len(routes)}")
     print(f"internal links:    {n_links}")
     print(f"redirect rules:    {n_redir}")
+    print(f"legacy aliases:    {n_alias}")
     print(f"downloads:         {n_dl}")
     print(f"verified records:  {n_ver} (max age {args.max_age}d)")
     if args.external:
