@@ -50,6 +50,17 @@ jobs:
           HUGO_RELATIVEURLS=true hugo --gc --cleanDestinationDir
           python3 scripts/check-links.py --public public --max-age 180
 
+      # What actually ships. Pages serves this from /blog until hexenworld.org
+      # is pointed at it, and a subdirectory baseURL is a genuinely different
+      # build from either mode above — every internal link gains the prefix.
+      # Note relativeURLs is NOT used here: combined with a subdirectory
+      # baseURL, Hugo emits the prefix twice (../blog/moved/ from /blog/files/)
+      # and every link breaks. Absolute is correct when the path is known.
+      - name: Published build (subdirectory baseURL)
+        run: |
+          hugo --gc --cleanDestinationDir --baseURL "https://hexenwail.github.io/blog/"
+          python3 scripts/check-links.py --public public --max-age 180 --base-path /blog
+
   external-links:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest

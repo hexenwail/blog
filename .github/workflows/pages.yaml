@@ -1,0 +1,85 @@
+name: publish
+
+# Publishing is a decision, not a side effect of merging — the same rule the
+# server deployment ran under. This only fires when a human asks for it, from
+# the Actions tab or `gh workflow run publish`. Adding `push: branches: [main]`
+# here is the one line that would make it automatic.
+on:
+  workflow_dispatch:
+
+# Pages needs these; the token is scoped to this run and nothing else.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two publishes race. In-progress runs finish rather than being
+# cancelled, so a deploy is never interrupted half-uploaded.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  HUGO_VERSION: 0.163.3
+  # The address the built site will be served from.
+  #
+  # hugo.toml names hexenworld.org as canonical, which is the end state. Until
+  # that domain resolves to GitHub Pages this overrides it, so feeds, sitemap,
+  # canonical tags and the legacy redirect pages all point at the address the
+  # site is actually reachable at rather than one that is not live yet.
+  #
+  # CUTOVER: delete this override (and add static/CNAME) when hexenworld.org
+  # is pointed at GitHub. Nothing else needs to change.
+  SITE_BASE_URL: https://hexenwail.github.io/blog/
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/configure-pages@v5
+
+      - name: Install Hugo (extended)
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl -sSL -o /tmp/hugo.tar.gz \
+            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.tar.gz"
+          tar -xzf /tmp/hugo.tar.gz -C "$HOME/.local/bin" hugo
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install checker deps
+        run: pip install --quiet pyyaml
+
+      - name: Build
+        run: hugo --gc --cleanDestinationDir --baseURL "$SITE_BASE_URL"
+
+      # Same gate the server deployment used: a failed check publishes nothing
+      # rather than replacing a working site with a broken one.
+      #
+      # The checker needs the subdirectory the site is served from, which is
+      # just the path component of the baseURL — derived rather than written
+      # out again, so the cutover stays a one-line change to SITE_BASE_URL.
+      - name: Link and consistency check
+        run: |
+          BASE_PATH=$(printf '%s' "$SITE_BASE_URL" | sed -E 's#^[a-z]+://[^/]+##; s#/$##')
+          echo "serving from: '${BASE_PATH:-/}'"
+          python3 scripts/check-links.py --public public --max-age 180 --base-path "$BASE_PATH"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

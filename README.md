@@ -19,36 +19,44 @@ wants PyYAML; without it the data checks are skipped with a warning rather than 
 
 ## Publishing
 
-GitHub is the source of truth. The file host pulls *from* it and never the other way
-round, so contributing needs a merged pull request and nothing else — no account on the
-server, no ssh key, no shell.
-
-On the server:
+The site is built and hosted entirely by GitHub Pages. There is no server, so
+contributing needs a merged pull request and nothing else — no account anywhere, no ssh
+key, no shell, and nothing for anyone to hold credentials to.
 
 ```sh
-systemctl start blog-deploy   # pull from GitHub, build, check, publish
-blog-deploy                   # the same, from a shell
-blog-deploy --dry-run         # show exactly what would change, write nothing
+gh workflow run publish --repo hexenwail/blog
 ```
 
-It hard-resets its clone to `origin/main`, builds in portable mode, runs the link
-checks, and rsyncs **only `public/`** onto the file host. A failed check publishes
-nothing and leaves the live site untouched.
+or the **publish** workflow from the Actions tab. It builds, runs the link checks and
+deploys. A failed check publishes nothing and leaves the live site standing.
 
-**It is manual on purpose.** No timer, no cron entry, no webhook. Merging is a
-conversation between contributors; publishing is a decision, and it stays one. The
-server holds no credentials either: the clone is public HTTPS, so there is no deploy
-key on the box to steal.
+**It is manual on purpose.** Merging is a conversation between contributors; publishing
+is a decision, and it stays one. Adding `push: branches: [main]` to
+`.github/workflows/pages.yaml` is the single line that would make every merge go live.
 
-**That command does not live in this repo, on purpose.** It is a NixOS module on the
-server. Anyone can open a pull request here, so if the publishing script were a file in
-this tree, a merged PR touching it would be arbitrary code execution on the file host —
-the precise thing the GitHub move exists to prevent. This repo supplies content; the
-server supplies everything that executes.
+### Where it is served from
 
-Worth knowing where that line actually falls: Hugo still renders `layouts/` from this
-repo, and templates are not a sandbox. Content and data changes are inert, but treat a
-pull request that edits `layouts/` with the same care as one that edits code.
+Until `hexenworld.org` is pointed at GitHub, the site lives at
+`https://hexenwail.github.io/blog/` — a subdirectory. `hugo.toml` still names
+hexenworld.org as canonical because that is the end state; the workflow's
+`SITE_BASE_URL` overrides it in the meantime so that feeds, sitemap, canonical tags and
+the legacy redirect pages all point at the address that actually resolves.
+
+The cutover is two steps: add `static/CNAME` containing `hexenworld.org`, and delete the
+`SITE_BASE_URL` override. Nothing else changes.
+
+A subdirectory deployment is a genuinely different build from a root one — every
+internal link gains the prefix — so CI checks that mode too, and `check-links.py
+--base-path` validates it. Note that `relativeURLs` is *not* the tool for this: combined
+with a subdirectory baseURL, Hugo emits the prefix twice and every link breaks. It is
+for the case where the subdirectory is unknown, such as a USB stick or a Wayback
+capture, and it is checked separately.
+
+Residual risk worth knowing: Hugo renders `layouts/` from this repo, and Go templates
+are not a sandbox. Content and data changes are inert; a pull request that edits
+`layouts/` runs code in the build, so review it as code. The blast radius is an
+ephemeral GitHub runner rather than a machine anyone owns, which is much of the reason
+to host it this way.
 
 `make publish-local` pushes the working tree straight to the file host, skipping
 GitHub. It exists for when the remote is unreachable and something has to go out now;

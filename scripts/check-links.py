@@ -67,7 +67,23 @@ def build_route_set(public: str) -> set[str]:
     return routes
 
 
-def check_internal_links(public: str, routes: set[str]) -> int:
+def strip_base(path: str, base_path: str) -> str:
+    """Map a site-absolute URL onto its path inside public/.
+
+    When the site is served from a subdirectory its baseURL carries that prefix,
+    so Hugo emits /blog/play/ for a file that lives at play/. Without this the
+    checker would call every link on the site broken.
+    """
+    if not base_path:
+        return path
+    if path == base_path or path == base_path + "/":
+        return "/"
+    if path.startswith(base_path + "/"):
+        return path[len(base_path):]
+    return path
+
+
+def check_internal_links(public: str, routes: set[str], base_path: str = "") -> int:
     checked = 0
     for dirpath, _, filenames in os.walk(public):
         for fn in filenames:
@@ -92,7 +108,7 @@ def check_internal_links(public: str, routes: set[str]) -> int:
                 # Relative hrefs (the portable build emits ../../foo/) resolve
                 # against the page's own directory, exactly as a browser would.
                 if target.startswith("/"):
-                    resolved = target
+                    resolved = strip_base(target, base_path)
                 else:
                     resolved = posixpath.normpath(page_dir + target)
                     if target.endswith("/") and not resolved.endswith("/"):
@@ -104,7 +120,7 @@ def check_internal_links(public: str, routes: set[str]) -> int:
     return checked
 
 
-def check_redirects(public: str, routes: set[str]) -> int:
+def check_redirects(public: str, routes: set[str], base_path: str = "") -> int:
     path = os.path.join(public, "_redirects")
     if not os.path.exists(path):
         warn("_redirects was not generated")
@@ -118,7 +134,7 @@ def check_redirects(public: str, routes: set[str]) -> int:
             parts = line.split()
             if len(parts) < 2:
                 continue
-            dest = parts[1]
+            dest = strip_base(parts[1], base_path)
             n += 1
             if dest not in routes:
                 fail(f"_redirects points at a page that does not exist: {line}")
@@ -226,15 +242,23 @@ def main() -> int:
     ap.add_argument("--public", default="public")
     ap.add_argument("--max-age", type=int, default=180)
     ap.add_argument("--external", action="store_true")
+    ap.add_argument(
+        "--base-path",
+        default="",
+        help="Subdirectory the site is served from, e.g. /blog. Must match the "
+        "path component of the build's baseURL.",
+    )
     args = ap.parse_args()
+
+    base_path = "/" + args.base_path.strip("/") if args.base_path.strip("/") else ""
 
     if not os.path.isdir(args.public):
         print(f"error: {args.public}/ not found — run `hugo` first", file=sys.stderr)
         return 2
 
     routes = build_route_set(args.public)
-    n_links = check_internal_links(args.public, routes)
-    n_redir = check_redirects(args.public, routes)
+    n_links = check_internal_links(args.public, routes, base_path)
+    n_redir = check_redirects(args.public, routes, base_path)
 
     files_yaml = load_yaml("data/files.yaml") if os.path.exists("data/files.yaml") else None
     community_yaml = load_yaml("data/community.yaml") if os.path.exists("data/community.yaml") else None
