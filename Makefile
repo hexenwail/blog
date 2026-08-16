@@ -37,11 +37,17 @@ check: build
 # working tree — GitHub is the source of truth, and contributors reach the file
 # host through a merged pull request, not through an account on the server.
 # Manual by design: no timer, no webhook.
+#
+# `blog-deploy` is provided by the server's NixOS module, NOT by this repo, and
+# deliberately so: anyone can open a pull request here, so nothing in this tree
+# is allowed to become code that runs on the file host. These two targets only
+# work on the server; everywhere else they will say "command not found", which
+# is the correct answer.
 deploy:
-	scripts/deploy-server.sh
+	blog-deploy
 
 deploy-dry:
-	scripts/deploy-server.sh --dry-run
+	blog-deploy --dry-run
 
 # Escape hatch: publish this working tree directly, skipping GitHub. For when
 # the remote is unreachable and something has to go out now. Whatever it

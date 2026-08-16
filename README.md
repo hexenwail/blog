@@ -26,18 +26,29 @@ server, no ssh key, no shell.
 On the server:
 
 ```sh
-blog-deploy              # pull from GitHub, build, check, publish
-blog-deploy --dry-run    # show exactly what would change, write nothing
+systemctl start blog-deploy   # pull from GitHub, build, check, publish
+blog-deploy                   # the same, from a shell
+blog-deploy --dry-run         # show exactly what would change, write nothing
 ```
 
-That runs `scripts/deploy-server.sh`, which hard-resets its clone to `origin/main`,
-builds in portable mode, runs the link checks, and rsyncs **only `public/`** onto the
-file host. A failed check publishes nothing and leaves the live site untouched.
+It hard-resets its clone to `origin/main`, builds in portable mode, runs the link
+checks, and rsyncs **only `public/`** onto the file host. A failed check publishes
+nothing and leaves the live site untouched.
 
 **It is manual on purpose.** No timer, no cron entry, no webhook. Merging is a
 conversation between contributors; publishing is a decision, and it stays one. The
 server holds no credentials either: the clone is public HTTPS, so there is no deploy
 key on the box to steal.
+
+**That command does not live in this repo, on purpose.** It is a NixOS module on the
+server. Anyone can open a pull request here, so if the publishing script were a file in
+this tree, a merged PR touching it would be arbitrary code execution on the file host —
+the precise thing the GitHub move exists to prevent. This repo supplies content; the
+server supplies everything that executes.
+
+Worth knowing where that line actually falls: Hugo still renders `layouts/` from this
+repo, and templates are not a sandbox. Content and data changes are inert, but treat a
+pull request that edits `layouts/` with the same care as one that edits code.
 
 `make publish-local` pushes the working tree straight to the file host, skipping
 GitHub. It exists for when the remote is unreachable and something has to go out now;
