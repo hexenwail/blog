@@ -59,6 +59,10 @@
           <p class="foot-title">Site</p>
           <ul class="bare">
             {{ range .Site.Menus.footer }}<li><a href="{{ .URL }}">{{ .Name }}</a></li>{{ end }}
+            {{/* Lives here rather than in the footer menu because /inky/ is a
+                 guest wing with its own chrome, not another Thyrion section.
+                 The outbound link to his live site stays under Elsewhere. */}}
+            <li><a href="{{ "/inky/" | relURL }}">Inky's Corner (mirror)</a></li>
             <li><a href="{{ "index.xml" | relURL }}">RSS</a></li>
           </ul>
         </div>

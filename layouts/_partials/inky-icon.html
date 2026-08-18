@@ -1,0 +1,36 @@
+{{- /*
+  Icon set for the /inky/ mirror.
+
+  His menu icons come from a hosted icomoon webfont. That font is his asset and
+  is not copied here, so each glyph is replaced by a small inline path that
+  inherits currentColor and needs no network request and no font file. Names
+  mirror his class names (moon-home, moon-yinyang, ...) so the substitution is
+  traceable.
+
+  Call: {{ partial "inky-icon.html" "home" }}
+*/ -}}
+{{- $name := . -}}
+{{- $box := "0 0 24 24" -}}
+<svg class="ico" viewBox="{{ $box }}" aria-hidden="true" focusable="false">
+{{- if eq $name "home" -}}
+  <path d="M3 11 12 3l9 8"/><path d="M6 10v10h12V10"/>
+{{- else if eq $name "yinyang" -}}
+  <circle cx="12" cy="12" r="9"/><path d="M12 3a4.5 4.5 0 0 0 0 9 4.5 4.5 0 0 1 0 9"/>
+{{- else if eq $name "quake" -}}
+  <path d="M12 2 22 12 12 22 2 12Z"/>
+{{- else if eq $name "bulb" -}}
+  <path d="M12 3a6 6 0 0 0-3 11.2V17h6v-2.8A6 6 0 0 0 12 3Z"/><path d="M10 20h4"/>
+{{- else if eq $name "search" -}}
+  <circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/>
+{{- else if eq $name "tool" -}}
+  <path d="M15.5 3.5a5 5 0 0 0-6.2 6.3L3.5 15.6V20h4.4l5.8-5.8a5 5 0 0 0 6.3-6.2l-3.1 3.1-3.5-3.5Z"/>
+{{- else if eq $name "interview" -}}
+  <rect x="9" y="3" width="6" height="10" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/><path d="M8.5 21h7"/>
+{{- else if eq $name "hi" -}}
+  <path d="M4 20l4-1L18.5 8.5 15.5 5.5 5 16Z"/><path d="M14.5 6.5 17.5 9.5"/>
+{{- else if eq $name "back" -}}
+  <path d="M20 12H4"/><path d="M10 6 4 12l6 6"/>
+{{- else -}}
+  <circle cx="12" cy="12" r="8"/>
+{{- end -}}
+</svg>
