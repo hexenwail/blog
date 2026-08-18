@@ -24,7 +24,6 @@ download:
     - {label: "Internet Archive", url: "https://archive.org/details/EXAMPLE"}
     - {label: "ModDB", url: "https://moddb.com/EXAMPLE"}
 sources:
-  - {label: "Original announcement", url: "/news/privateers-hold/"}
   - {label: "Wayback: hexenworld.org post", url: "https://web.archive.org/web/*/hexenworld.org/*"}
 readme: |
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Thanks to everyone on the

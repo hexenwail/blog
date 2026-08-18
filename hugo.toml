@@ -42,39 +42,35 @@ uglyURLs = false
   tag = "tags"
   author = "authors"
 
+# While the site stands in for the old Hammer of Thyrion home page, the menu
+# mirrors that site's nav. The play/maps/modding/reference/community/archive
+# sections still build and are still reachable by URL — they are just out of the
+# menu until their content is real.
 [menus]
   [[menus.main]]
-    name = "Play"
-    pageRef = "/play"
+    name = "News"
+    pageRef = "/news"
     weight = 10
   [[menus.main]]
-    name = "Maps & Mods"
-    pageRef = "/maps"
+    name = "About"
+    pageRef = "/about"
     weight = 20
   [[menus.main]]
-    name = "Files"
-    pageRef = "/files"
+    name = "Features"
+    pageRef = "/features"
     weight = 30
   [[menus.main]]
-    name = "Modding"
-    pageRef = "/modding"
+    name = "Downloads"
+    pageRef = "/download"
     weight = 40
   [[menus.main]]
-    name = "Reference"
-    pageRef = "/reference"
+    name = "Links"
+    pageRef = "/links"
     weight = 50
-  [[menus.main]]
-    name = "Community"
-    pageRef = "/community"
-    weight = 60
-  [[menus.main]]
-    name = "Archive"
-    pageRef = "/archive"
-    weight = 70
   [[menus.main]]
     name = "Search"
     pageRef = "/search"
-    weight = 80
+    weight = 60
 
 [[menus.footer]]
   name = "About"

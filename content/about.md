@@ -1,29 +1,39 @@
 ---
-title: "About"
-description: "What this is, who runs it, and how it is built to outlive us."
+title: "About Hammer of Thyrion"
+description: "A cross-platform source port of Hexen II and HexenWorld, carried on from where Raven's 2000 source release stopped."
+updated: "2026-08-18"
 ---
 
-Thyrion is a community site for Hexen II: playing it, mapping it, modding it, and keeping
-its history from evaporating.
+Hammer of Thyrion — usually shortened to uHexen2 — is a source port of Raven Software's
+*Hexen II* and of *HexenWorld*, the game's multiplayer variant. It runs the retail game,
+the shareware demo and the *Portal of Praevus* mission pack on a wide range of operating
+systems and CPU architectures.
 
-## How it is built
+## Where it came from
 
-- **Hugo**, single static binary, no plugin ecosystem to rot.
-- **Content in git** as Markdown and YAML. Fork the repo and you have the whole site.
-- **No database, no server-side code, no accounts, no comments, no ads, no analytics.**
-- Every content page is readable with JavaScript switched off.
-- The built site is pushed to the Internet Archive periodically, so it is preserved on the
-  same terms it preserves everything else.
+Raven released the Hexen II and HexenWorld sources in 2000. Work on the original Linux
+port stopped in early 2002, which left the only unix-side build unmaintained. Hammer of
+Thyrion picked that code up so Linux, BSD and Mac OS X players would keep a working
+game, and kept Windows support going at the same time. It is the successor to the
+Anvil of Thyrion project, which had been abandoned.
 
-## Why those constraints
+## What changed since
 
-Read [A short history of HexenWorld](/archive/history-of-hexenworld/). Two community hubs
-have died. The dynamic ones rotted; the hand-written static one is still up. We took the
-hint.
+Well over a decade of fixes: crashes, save and load bugs, network protocol
+incompatibilities, memory corruption, and long-standing quirks in the game code itself.
+Alongside them came new capability — modern sound back-ends, sane mouse handling,
+resolution switching without a restart, OpenGL glow effects, coloured lighting, external
+music, and support for platforms Raven never targeted. The
+[features page](/engine-features/) has the full list.
 
-## Bus factor
+## Licence
 
-At least two people hold repo access *and* domain/DNS access, the repo is mirrored to a
-second forge, and the [contribute](/contribute/) page documents how to take over if
-everyone currently involved disappears. That is not pessimism — it is the observed
-failure mode of every site this one is replacing.
+The port is distributed under the GNU General Public License, version 2 — the licence
+Raven used for the Hexen II source release.
+
+{{< note >}}
+This page is adapted from the project's SourceForge home at
+[uhexen2.sourceforge.net](http://uhexen2.sourceforge.net/), rewritten rather than copied.
+The project itself lives at
+[sourceforge.net/projects/uhexen2](https://sourceforge.net/projects/uhexen2/).
+{{< /note >}}

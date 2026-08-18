@@ -21,8 +21,6 @@ download:
   sha256: "bbbb0000000000000000000000000000000000000000000000000000000000bb"
   mirrors:
     - {label: "Internet Archive", url: "https://archive.org/details/EXAMPLE"}
-sources:
-  - {label: "Original announcement", url: "/news/tomb-of-osiris/"}
 readme: |
   My first Hexen II map set. Consectetur adipiscing elit, sed do eiusmod tempor.
   Requires nothing but the retail game.
