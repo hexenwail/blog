@@ -92,11 +92,13 @@ main .wrap { padding-block: 1.5rem 2rem; }
 /* --- brand ----------------------------------------------------------------- */
 
 .brand {
-  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  display: flex; flex-direction: column; align-items: flex-start; gap: .5rem;
   color: inherit; text-decoration: none;
 }
 .brand:hover { color: var(--link-hover); }
 .brand-mark { color: var(--gold); flex: none; width: 40px; height: 40px; }
+/* The old site's header logo, drawn on the same navy it sits on here. */
+.brand-logo { display: block; max-width: 100%; height: auto; }
 .brand-text strong {
   display: block;
   font-family: var(--serif); font-weight: 700; font-size: 1.05rem; line-height: 1.25;
@@ -382,8 +384,9 @@ a.card:hover h3 { color: var(--link-hover); text-decoration: underline; }
     padding: 1rem 1.5rem 1.1rem;
     border-right: 0; border-bottom: 1px solid var(--rule);
   }
-  .brand { flex-direction: row; justify-content: center; gap: .6rem; text-align: left; }
+  .brand { flex-direction: row; justify-content: center; align-items: center; gap: .6rem; text-align: left; }
   .brand-mark { width: 32px; height: 32px; }
+  .brand-logo { width: 120px; height: auto; }
   .brand-text em { display: none; }
   .nav { margin-top: .9rem; }
   .nav ul { display: flex; flex-wrap: wrap; justify-content: center; gap: .1rem .8rem; }
