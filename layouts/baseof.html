@@ -21,13 +21,17 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<header class="site-head">
-  <div class="wrap head-inner">
+{{/* Two frames, as the old site had them: a left column that stays put and a
+     right column that scrolls. One <div> deep so the whole thing collapses to a
+     stacked top bar on narrow screens with a single display change. */}}
+<div class="frameset">
+
+  <aside class="sidebar">
     <a class="brand" href="{{ "/" | relURL }}">
       {{ partial "mark.html" . }}
       <span class="brand-text">
-        <strong>Thyrion</strong>
-        <small>a Hexen II community</small>
+        <strong>Hexen II: Hammer of Thyrion</strong>
+        <em>Excerpts from the Chronicle of Deeds</em>
       </span>
     </a>
     <nav class="nav" aria-label="Main">
@@ -37,42 +41,45 @@
         {{ end }}
       </ul>
     </nav>
-  </div>
-</header>
+  </aside>
 
-<main id="main">
-  {{ block "main" . }}{{ end }}
-</main>
+  <div class="content">
+    <main id="main">
+      {{ block "main" . }}{{ end }}
+    </main>
 
-<footer class="site-foot">
-  <div class="wrap foot-grid">
-    <div>
-      <p class="foot-title">Thyrion</p>
-      <p class="muted">{{ .Site.Params.tagline }}</p>
-      <p class="muted small">Outbound links last verified {{ .Site.Params.linksVerified }}.</p>
-    </div>
-    <div>
-      <p class="foot-title">Site</p>
-      <ul class="bare">
-        {{ range .Site.Menus.footer }}<li><a href="{{ .URL }}">{{ .Name }}</a></li>{{ end }}
-        <li><a href="{{ "index.xml" | relURL }}">RSS</a></li>
-      </ul>
-    </div>
-    <div>
-      <p class="foot-title">Elsewhere</p>
-      <ul class="bare">
-        <li><a href="{{ .Site.Params.discord }}">Discord</a></li>
-        <li><a href="{{ .Site.Params.repo }}">Source (this site)</a></li>
-        <li><a href="http://earthday.free.fr/Inkys-Hexen-II-Mapping-Corner/">Inky's Mapping Corner</a></li>
-      </ul>
-    </div>
+    <footer class="site-foot">
+      <div class="wrap foot-grid">
+        <div>
+          <p class="foot-title">Thyrion</p>
+          <p class="muted">{{ .Site.Params.tagline }}</p>
+          <p class="muted small">Outbound links last verified {{ .Site.Params.linksVerified }}.</p>
+        </div>
+        <div>
+          <p class="foot-title">Site</p>
+          <ul class="bare">
+            {{ range .Site.Menus.footer }}<li><a href="{{ .URL }}">{{ .Name }}</a></li>{{ end }}
+            <li><a href="{{ "index.xml" | relURL }}">RSS</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="foot-title">Elsewhere</p>
+          <ul class="bare">
+            <li><a href="{{ .Site.Params.discord }}">Discord</a></li>
+            <li><a href="{{ .Site.Params.repo }}">Source (this site)</a></li>
+            <li><a href="http://earthday.free.fr/Inkys-Hexen-II-Mapping-Corner/">Inky's Mapping Corner</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="wrap foot-legal">
+        <p class="muted small">
+          Static site, no database, no trackers. Content in git — fork it and it survives us.
+          Hexen II is &copy; Raven Software / id Software. Third-party mods and maps remain the property of their authors.
+        </p>
+      </div>
+    </footer>
   </div>
-  <div class="wrap foot-legal">
-    <p class="muted small">
-      Static site, no database, no trackers. Content in git — fork it and it survives us.
-      Hexen II is &copy; Raven Software / id Software. Third-party mods and maps remain the property of their authors.
-    </p>
-  </div>
-</footer>
+
+</div>
 </body>
 </html>

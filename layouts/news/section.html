@@ -14,11 +14,13 @@
 
   {{ range .RegularPages.ByDate.Reverse }}
     <article class="news-item">
-      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time>
-      <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+      <h2>
+        <time class="news-date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time> &mdash;
+        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+      </h2>
       <p class="muted small">
         {{ with .Params.authors }}by {{ delimit . ", " }}{{ end }}
-        {{ with .Params.tags }}&middot; {{ range . }}<a class="tag" href="{{ "tags/" | relURL }}{{ . | urlize }}/">{{ . }}</a>{{ end }}{{ end }}
+        {{ if and .Params.authors .Params.tags }}&middot; {{ end }}{{ with .Params.tags }}{{ range . }}<a class="tag" href="{{ "tags/" | relURL }}{{ . | urlize }}/">{{ . }}</a>{{ end }}{{ end }}
       </p>
       <p>{{ .Summary | plainify | truncate 260 }}</p>
       {{ with .Params.release }}
